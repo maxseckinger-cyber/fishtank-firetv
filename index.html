@@ -839,6 +839,3510 @@ function escHtml(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+// ── PRESET CAMERAS ──
+const PRESET_CAMS = [
+  { name: "Director",     url: "https://streams-g.fishtank.live/hls/live+dirc-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTU4MTMsImV4cCI6MTc3NDQxNzYxM30.SOM_AOjMalQcfOHtXCedbHbMfYjlQXlBS4gQr7CuL6A&video=maxbps" },
+  { name: "Dorm",         url: "https://streams-g.fishtank.live/hls/live+dmrm-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTU4MTMsImV4cCI6MTc3NDQxNzYxM30.SOM_AOjMalQcfOHtXCedbHbMfYjlQXlBS4gQr7CuL6A&video=maxbps" },
+  { name: "Closet",       url: "https://streams-g.fishtank.live/hls/live+dmcl-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTU4MTMsImV4cCI6MTc3NDQxNzYxM30.SOM_AOjMalQcfOHtXCedbHbMfYjlQXlBS4gQr7CuL6A&video=maxbps" },
+  { name: "Bar",          url: "https://streams-g.fishtank.live/hls/live+brrr-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTU4MTMsImV4cCI6MTc3NDQxNzYxM30.SOM_AOjMalQcfOHtXCedbHbMfYjlQXlBS4gQr7CuL6A&video=maxbps" },
+  { name: "Kitchen",      url: "https://streams-h.fishtank.live/hls/live+ktch-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Hallway",      url: "https://streams-h.fishtank.live/hls/live+hwdn-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Jacuzzi",      url: "https://streams-h.fishtank.live/hls/live+jckz-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Bar PTZ",      url: "https://streams-h.fishtank.live/hls/live+brpz-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Dining Room",  url: "https://streams-h.fishtank.live/hls/live+dnrm-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Market",       url: "https://streams-h.fishtank.live/hls/live+mrke-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Foyer",        url: "https://streams-h.fishtank.live/hls/live+foyr-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Glassroom",    url: "https://streams-h.fishtank.live/hls/live+gsrm-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Computer Lab", url: "https://streams-h.fishtank.live/hls/live+bbcl-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Confessional", url: "https://streams-h.fishtank.live/hls/live+cfsl-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Corridor",     url: "https://streams-h.fishtank.live/hls/live+codr-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "West Wing",    url: "https://streams-h.fishtank.live/hls/live+hwup-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "East Wing",    url: "https://streams-h.fishtank.live/hls/live+bkny-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Jungle Room",  url: "https://streams-h.fishtank.live/hls/live+br4j-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+];
+
+// ── INIT ──
+(function init() {
+  const hasCams = loadCams();
+  if (!hasCams || cams.length === 0) {
+    cams = [...PRESET_CAMS];
+    saveCams();
+  }
+  renderCamList();
+  launchPlayer();
+})();
+</script>
+</body>
+</html>
+<!D<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fishtank TV</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.4.12/hls.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap');
+
+  :root {
+    --bg: #050810;
+    --surface: #0c1220;
+    --border: #1a2a3a;
+    --accent: #00e5ff;
+    --accent2: #ff3d6b;
+    --text: #c8dce8;
+    --dim: #4a6070;
+    --focus-glow: 0 0 0 3px #00e5ff, 0 0 20px rgba(0,229,255,0.4);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 100%; height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    overflow: hidden;
+    user-select: none;
+  }
+
+  /* ── LAYOUT ── */
+  #app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  /* ── HEADER ── */
+  #header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 28px 10px;
+    background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 100%);
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    z-index: 30;
+    pointer-events: none;
+    transition: opacity 0.4s;
+  }
+
+  #header.hidden { opacity: 0; }
+
+  .logo {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.3rem;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    text-shadow: 0 0 12px rgba(0,229,255,0.5);
+  }
+  .logo span { color: var(--accent2); }
+
+  .live-badge {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    color: var(--accent2);
+  }
+  .live-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent2);
+    animation: pulse-dot 1.4s ease-in-out infinite;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+  }
+
+  /* ── VIDEO ── */
+  #video-container {
+    position: relative;
+    flex: 1;
+    background: #000;
+    overflow: hidden;
+  }
+
+  #player {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    background: #000;
+  }
+
+  /* scan-line overlay */
+  #video-container::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.04) 2px,
+      rgba(0,0,0,0.04) 4px
+    );
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  /* corner brackets */
+  .corner {
+    position: absolute;
+    width: 24px; height: 24px;
+    z-index: 3;
+    opacity: 0.5;
+    transition: opacity 0.3s;
+  }
+  #video-container:hover .corner { opacity: 1; }
+  .corner-tl { top: 12px; left: 12px; border-top: 2px solid var(--accent); border-left: 2px solid var(--accent); }
+  .corner-tr { top: 12px; right: 12px; border-top: 2px solid var(--accent); border-right: 2px solid var(--accent); }
+  .corner-bl { bottom: 12px; left: 12px; border-bottom: 2px solid var(--accent); border-left: 2px solid var(--accent); }
+  .corner-br { bottom: 12px; right: 12px; border-bottom: 2px solid var(--accent); border-right: 2px solid var(--accent); }
+
+  /* loading spinner */
+  #loading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(5,8,16,0.85);
+    z-index: 10;
+    gap: 16px;
+    transition: opacity 0.3s;
+  }
+  #loading.hidden { opacity: 0; pointer-events: none; }
+  .spinner {
+    width: 48px; height: 48px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+  }
+
+  /* error overlay */
+  #error-msg {
+    position: absolute;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(5,8,16,0.9);
+    z-index: 11;
+    gap: 12px;
+    text-align: center;
+    padding: 40px;
+  }
+  #error-msg .err-icon { font-size: 2.5rem; }
+  #error-msg .err-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--accent2);
+    letter-spacing: 0.1em;
+  }
+  #error-msg .err-body {
+    font-size: 0.9rem;
+    color: var(--dim);
+    max-width: 460px;
+    line-height: 1.6;
+  }
+  #error-msg .err-hint {
+    margin-top: 8px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+  }
+
+  /* ── CAM SIDEBAR ── */
+  #sidebar {
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: 220px;
+    background: linear-gradient(270deg, rgba(12,18,32,0.98) 70%, transparent 100%);
+    display: flex;
+    flex-direction: column;
+    padding: 60px 16px 20px;
+    gap: 6px;
+    z-index: 20;
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    border-left: 1px solid var(--border);
+  }
+  #sidebar.open { transform: translateX(0); }
+
+  .sidebar-title {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--dim);
+    padding: 0 4px 8px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 4px;
+  }
+
+  .cam-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    background: transparent;
+    cursor: pointer;
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    transition: all 0.15s;
+    text-align: left;
+    width: 100%;
+    outline: none;
+  }
+  .cam-btn:focus, .cam-btn:hover {
+    background: rgba(0,229,255,0.08);
+    border-color: var(--accent);
+    color: #fff;
+    box-shadow: var(--focus-glow);
+  }
+  .cam-btn.active {
+    background: rgba(0,229,255,0.12);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .cam-icon {
+    width: 28px; height: 28px;
+    border-radius: 4px;
+    background: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem;
+    flex-shrink: 0;
+  }
+  .cam-btn.active .cam-icon { background: rgba(0,229,255,0.2); }
+
+  /* ── BOTTOM BAR ── */
+  #bottom-bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 24px;
+    background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, transparent 100%);
+    z-index: 20;
+    transition: opacity 0.4s;
+  }
+  #bottom-bar.hidden { opacity: 0; pointer-events: none; }
+
+  .ctrl-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 18px;
+    background: rgba(12,18,32,0.85);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.15s;
+  }
+  .ctrl-btn:focus, .ctrl-btn:hover {
+    background: rgba(0,229,255,0.1);
+    border-color: var(--accent);
+    color: var(--accent);
+    box-shadow: var(--focus-glow);
+  }
+  .ctrl-btn .icon { font-size: 1rem; }
+
+  #cam-label {
+    margin-left: auto;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    color: var(--dim);
+  }
+  #cam-label span { color: var(--accent); }
+
+  /* hint bar */
+  #hints {
+    display: flex;
+    gap: 16px;
+    margin-left: 8px;
+  }
+  .hint {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: var(--dim);
+  }
+  .key {
+    padding: 2px 6px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--text);
+    font-size: 0.65rem;
+    background: var(--surface);
+  }
+
+  /* ── TOAST ── */
+  #toast {
+    position: absolute;
+    top: 60px; left: 50%;
+    transform: translateX(-50%) translateY(-10px);
+    background: rgba(0,229,255,0.12);
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    padding: 8px 20px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    z-index: 50;
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  #toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* ── SETUP SCREEN ── */
+  #setup-screen {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    padding: 40px;
+  }
+  #setup-screen.hidden { display: none; }
+
+  .setup-logo {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 2.2rem;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    text-shadow: 0 0 30px rgba(0,229,255,0.4);
+    margin-bottom: 6px;
+  }
+  .setup-logo span { color: var(--accent2); }
+  .setup-sub {
+    font-size: 0.9rem;
+    color: var(--dim);
+    letter-spacing: 0.1em;
+    margin-bottom: 36px;
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  .setup-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 28px 36px;
+    max-width: 560px;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  .setup-card h2 {
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    margin-bottom: 14px;
+    font-family: 'Share Tech Mono', monospace;
+  }
+  .input-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .setup-input {
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 14px;
+    color: var(--text);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .setup-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(0,229,255,0.2);
+  }
+  .setup-input::placeholder { color: var(--dim); }
+
+  .setup-btn {
+    padding: 10px 20px;
+    background: rgba(0,229,255,0.1);
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    color: var(--accent);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.15s;
+  }
+  .setup-btn:focus, .setup-btn:hover {
+    background: rgba(0,229,255,0.2);
+    box-shadow: var(--focus-glow);
+  }
+  .setup-btn.primary {
+    padding: 12px 32px;
+    font-size: 1rem;
+  }
+
+  .cam-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  .cam-list::-webkit-scrollbar { width: 4px; }
+  .cam-list::-webkit-scrollbar-track { background: transparent; }
+  .cam-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .cam-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 12px;
+  }
+  .cam-item-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    min-width: 80px;
+    color: var(--text);
+  }
+  .cam-item-url {
+    flex: 1;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--dim);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .cam-item-del {
+    background: none;
+    border: none;
+    color: var(--accent2);
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    opacity: 0.6;
+    outline: none;
+    transition: opacity 0.15s;
+  }
+  .cam-item-del:hover, .cam-item-del:focus { opacity: 1; }
+
+  .setup-note {
+    font-size: 0.78rem;
+    color: var(--dim);
+    line-height: 1.6;
+    margin-top: 6px;
+    font-family: 'Share Tech Mono', monospace;
+  }
+  .setup-note a { color: var(--accent); text-decoration: none; }
+  .setup-note .hl { color: var(--accent); }
+
+  .setup-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 4px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ SETUP SCREEN ══ -->
+<div id="setup-screen">
+  <div class="setup-logo">FISH<span>TANK</span>.TV</div>
+  <div class="setup-sub">// FIRE TV VIEWER — FIRST-TIME SETUP</div>
+
+  <div class="setup-card">
+    <h2>// ADD YOUR CAMERA STREAMS</h2>
+    <p class="setup-note" style="margin-bottom:14px;">
+      Paste the <span class="hl">HLS (.m3u8)</span> stream URLs for each Fishtank camera.
+      You can find these by opening fishtank.live on a PC, opening DevTools → Network,
+      filtering by <span class="hl">m3u8</span>, and copying the playlist URLs.
+      Or paste any public HLS stream to test.
+    </p>
+
+    <div class="cam-list" id="cam-list"></div>
+
+    <div class="input-row">
+      <input class="setup-input" id="new-cam-name" placeholder="Label (e.g. Living Room)" />
+      <input class="setup-input" id="new-cam-url" placeholder="https://...stream.m3u8" style="flex:2;" />
+      <button class="setup-btn" id="add-cam-btn" onclick="addCam()">+ ADD</button>
+    </div>
+    <p class="setup-note">
+      Need a test URL? Try: <span class="hl">https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8</span>
+    </p>
+  </div>
+
+  <div class="setup-actions">
+    <button class="setup-btn primary" onclick="launchPlayer()">▶ LAUNCH PLAYER</button>
+  </div>
+  <p class="setup-note" style="margin-top:16px; text-align:center;">
+    Your camera list is saved locally — no re-entry needed after first setup.
+  </p>
+</div>
+
+<!-- ══ PLAYER ══ -->
+<div id="app">
+  <div id="header">
+    <div class="logo">FISH<span>TANK</span>.TV</div>
+    <div class="live-badge"><div class="live-dot"></div>LIVE</div>
+  </div>
+
+  <div id="video-container">
+    <video id="player" autoplay playsinline></video>
+    <div class="corner corner-tl"></div>
+    <div class="corner corner-tr"></div>
+    <div class="corner corner-bl"></div>
+    <div class="corner corner-br"></div>
+    <div id="loading"><div class="spinner"></div><div class="loading-label">CONNECTING...</div></div>
+    <div id="error-msg">
+      <div class="err-icon">📡</div>
+      <div class="err-title">STREAM UNAVAILABLE</div>
+      <div class="err-body">Could not connect to this camera feed. The stream may be offline, or the URL may have changed. Try another camera or update your stream URLs.</div>
+      <div class="err-hint">← / → to switch cameras · MENU to edit streams</div>
+    </div>
+  </div>
+
+  <div id="bottom-bar">
+    <button class="ctrl-btn" id="prev-btn" onclick="prevCam()"><span class="icon">◀</span>PREV CAM</button>
+    <button class="ctrl-btn" id="cams-btn" onclick="toggleSidebar()"><span class="icon">⊞</span>ALL CAMS</button>
+    <button class="ctrl-btn" id="next-btn" onclick="nextCam()">NEXT CAM<span class="icon">▶</span></button>
+    <button class="ctrl-btn" id="setup-btn-main" onclick="openSetup()"><span class="icon">⚙</span>EDIT</button>
+    <div id="cam-label">CAM: <span id="cam-name-label">—</span></div>
+    <div id="hints">
+      <div class="hint"><span class="key">◀▶</span> switch</div>
+      <div class="hint"><span class="key">▲▼</span> menu</div>
+    </div>
+  </div>
+
+  <div id="sidebar">
+    <div class="sidebar-title">// SELECT CAMERA</div>
+    <div id="sidebar-cams"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ── STATE ──
+let cams = [];
+let currentIdx = 0;
+let hls = null;
+let sidebarOpen = false;
+let uiTimeout = null;
+
+const STORAGE_KEY = 'fishtank_cams_v1';
+
+// ── STORAGE ──
+function saveCams() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(cams)); } catch(e) {}
+}
+function loadCams() {
+  try {
+    const d = localStorage.getItem(STORAGE_KEY);
+    if (d) { cams = JSON.parse(d); return true; }
+  } catch(e) {}
+  return false;
+}
+
+// ── SETUP SCREEN ──
+function renderCamList() {
+  const el = document.getElementById('cam-list');
+  if (!cams.length) {
+    el.innerHTML = '<div style="color:var(--dim);font-family:\'Share Tech Mono\',monospace;font-size:0.75rem;padding:8px 0;">No cameras added yet.</div>';
+    return;
+  }
+  el.innerHTML = cams.map((c,i) => `
+    <div class="cam-item">
+      <div class="cam-item-name">${escHtml(c.name)}</div>
+      <div class="cam-item-url">${escHtml(c.url)}</div>
+      <button class="cam-item-del" onclick="removeCam(${i})" title="Remove">✕</button>
+    </div>
+  `).join('');
+}
+
+function addCam() {
+  const nameEl = document.getElementById('new-cam-name');
+  const urlEl = document.getElementById('new-cam-url');
+  const name = nameEl.value.trim() || `Cam ${cams.length + 1}`;
+  const url = urlEl.value.trim();
+  if (!url) { showToast('Enter a stream URL'); return; }
+  cams.push({ name, url });
+  saveCams();
+  nameEl.value = ''; urlEl.value = '';
+  renderCamList();
+}
+
+function removeCam(i) {
+  cams.splice(i, 1);
+  saveCams();
+  renderCamList();
+}
+
+function launchPlayer() {
+  if (!cams.length) { showToast('Add at least one camera stream'); return; }
+  document.getElementById('setup-screen').classList.add('hidden');
+  currentIdx = 0;
+  buildSidebar();
+  loadCam(currentIdx);
+  showUI();
+}
+
+function openSetup() {
+  document.getElementById('setup-screen').classList.remove('hidden');
+  renderCamList();
+}
+
+// ── PLAYER ──
+function loadCam(idx) {
+  if (!cams[idx]) return;
+  currentIdx = idx;
+
+  const video = document.getElementById('player');
+  const loading = document.getElementById('loading');
+  const errorMsg = document.getElementById('error-msg');
+
+  errorMsg.style.display = 'none';
+  loading.classList.remove('hidden');
+  document.getElementById('cam-name-label').textContent = cams[idx].name;
+  updateSidebarActive();
+
+  // tear down old hls
+  if (hls) { hls.destroy(); hls = null; }
+
+  const url = cams[idx].url;
+
+  if (Hls.isSupported()) {
+    hls = new Hls({
+      enableWorker: true,
+      lowLatencyMode: true,
+      maxBufferLength: 8,
+      maxMaxBufferLength: 20,
+      backBufferLength: 10,
+    });
+    hls.loadSource(url);
+    hls.attachMedia(video);
+    hls.on(Hls.Events.MANIFEST_PARSED, () => {
+      loading.classList.add('hidden');
+      video.play().catch(() => {});
+    });
+    hls.on(Hls.Events.ERROR, (e, data) => {
+      if (data.fatal) {
+        loading.classList.add('hidden');
+        errorMsg.style.display = 'flex';
+      }
+    });
+  } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+    // native HLS (Safari-based)
+    video.src = url;
+    video.addEventListener('loadedmetadata', () => {
+      loading.classList.remove('hidden');  // just to be safe
+    }, { once: true });
+    video.addEventListener('canplay', () => {
+      loading.classList.add('hidden');
+      video.play().catch(() => {});
+    }, { once: true });
+    video.addEventListener('error', () => {
+      loading.classList.add('hidden');
+      errorMsg.style.display = 'flex';
+    }, { once: true });
+  } else {
+    loading.classList.add('hidden');
+    errorMsg.style.display = 'flex';
+  }
+}
+
+function prevCam() {
+  if (!cams.length) return;
+  const newIdx = (currentIdx - 1 + cams.length) % cams.length;
+  loadCam(newIdx);
+  showUI();
+}
+
+function nextCam() {
+  if (!cams.length) return;
+  const newIdx = (currentIdx + 1) % cams.length;
+  loadCam(newIdx);
+  showUI();
+}
+
+// ── SIDEBAR ──
+function buildSidebar() {
+  const el = document.getElementById('sidebar-cams');
+  el.innerHTML = cams.map((c, i) => `
+    <button class="cam-btn ${i === currentIdx ? 'active' : ''}" 
+            id="sidebar-cam-${i}"
+            onclick="loadCam(${i}); closeSidebar();">
+      <div class="cam-icon">📷</div>
+      ${escHtml(c.name)}
+    </button>
+  `).join('');
+}
+
+function updateSidebarActive() {
+  cams.forEach((_, i) => {
+    const btn = document.getElementById(`sidebar-cam-${i}`);
+    if (btn) btn.classList.toggle('active', i === currentIdx);
+  });
+}
+
+function toggleSidebar() {
+  sidebarOpen = !sidebarOpen;
+  document.getElementById('sidebar').classList.toggle('open', sidebarOpen);
+  if (sidebarOpen) buildSidebar();
+  showUI();
+}
+
+function closeSidebar() {
+  sidebarOpen = false;
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+// ── UI AUTO-HIDE ──
+function showUI() {
+  document.getElementById('header').classList.remove('hidden');
+  document.getElementById('bottom-bar').classList.remove('hidden');
+  clearTimeout(uiTimeout);
+  uiTimeout = setTimeout(hideUI, 5000);
+}
+
+function hideUI() {
+  if (!sidebarOpen) {
+    document.getElementById('header').classList.add('hidden');
+    document.getElementById('bottom-bar').classList.add('hidden');
+  }
+}
+
+document.addEventListener('mousemove', showUI);
+document.addEventListener('touchstart', showUI);
+
+// ── KEYBOARD / REMOTE ──
+document.addEventListener('keydown', (e) => {
+  showUI();
+  // Fire TV remote: left=37, right=39, up=38, down=40, enter=13, back=8/27, menu=18/82
+  switch(e.keyCode) {
+    case 37: // LEFT → prev cam
+      if (!sidebarOpen) { prevCam(); e.preventDefault(); }
+      break;
+    case 39: // RIGHT → next cam
+      if (!sidebarOpen) { nextCam(); e.preventDefault(); }
+      break;
+    case 38: // UP → show UI / open sidebar
+      if (!sidebarOpen) { toggleSidebar(); e.preventDefault(); }
+      break;
+    case 40: // DOWN → close sidebar
+      if (sidebarOpen) { closeSidebar(); e.preventDefault(); }
+      break;
+    case 13: // SELECT / ENTER
+      if (!sidebarOpen) { toggleSidebar(); e.preventDefault(); }
+      break;
+    case 8:  // BACK
+    case 27: // ESC
+      if (sidebarOpen) { closeSidebar(); e.preventDefault(); }
+      else if (!document.getElementById('setup-screen').classList.contains('hidden')) {
+        // do nothing — stay on setup
+      }
+      break;
+    case 77: // M → edit streams (dev convenience)
+      openSetup();
+      break;
+  }
+});
+
+// ── TOAST ──
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── HELPERS ──
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── PRESET CAMERAS ──
+const PRESET_CAMS = [
+  { name: "Director",     url: "https://streams-g.fishtank.live/hls/live+dirc-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTU4MTMsImV4cCI6MTc3NDQxNzYxM30.SOM_AOjMalQcfOHtXCedbHbMfYjlQXlBS4gQr7CuL6A&video=maxbps" },
+  { name: "Dorm",         url: "https://streams-g.fishtank.live/hls/live+dmrm-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTU4MTMsImV4cCI6MTc3NDQxNzYxM30.SOM_AOjMalQcfOHtXCedbHbMfYjlQXlBS4gQr7CuL6A&video=maxbps" },
+  { name: "Closet",       url: "https://streams-g.fishtank.live/hls/live+dmcl-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTU4MTMsImV4cCI6MTc3NDQxNzYxM30.SOM_AOjMalQcfOHtXCedbHbMfYjlQXlBS4gQr7CuL6A&video=maxbps" },
+  { name: "Bar",          url: "https://streams-g.fishtank.live/hls/live+brrr-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTU4MTMsImV4cCI6MTc3NDQxNzYxM30.SOM_AOjMalQcfOHtXCedbHbMfYjlQXlBS4gQr7CuL6A&video=maxbps" },
+  { name: "Kitchen",      url: "https://streams-h.fishtank.live/hls/live+ktch-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Hallway",      url: "https://streams-h.fishtank.live/hls/live+hwdn-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Jacuzzi",      url: "https://streams-h.fishtank.live/hls/live+jckz-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Bar PTZ",      url: "https://streams-h.fishtank.live/hls/live+brpz-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Dining Room",  url: "https://streams-h.fishtank.live/hls/live+dnrm-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Market",       url: "https://streams-h.fishtank.live/hls/live+mrke-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Foyer",        url: "https://streams-h.fishtank.live/hls/live+foyr-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Glassroom",    url: "https://streams-h.fishtank.live/hls/live+gsrm-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Computer Lab", url: "https://streams-h.fishtank.live/hls/live+bbcl-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Confessional", url: "https://streams-h.fishtank.live/hls/live+cfsl-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Corridor",     url: "https://streams-h.fishtank.live/hls/live+codr-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "West Wing",    url: "https://streams-h.fishtank.live/hls/live+hwup-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "East Wing",    url: "https://streams-h.fishtank.live/hls/live+bkny-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Jungle Room",  url: "https://streams-h.fishtank.live/hls/live+br4j-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+];
+
+// ── INIT ──
+(function init() {
+  const hasCams = loadCams();
+  if (!hasCams || cams.length === 0) {
+    cams = [...PRESET_CAMS];
+    saveCams();
+  }
+  renderCamList();
+  launchPlayer();
+})();
+</script>
+</body>
+</html>
+OCTYPE html><!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fishtank TV</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.4.12/hls.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap');
+
+  :root {
+    --bg: #050810;
+    --surface: #0c1220;
+    --border: #1a2a3a;
+    --accent: #00e5ff;
+    --accent2: #ff3d6b;
+    --text: #c8dce8;
+    --dim: #4a6070;
+    --focus-glow: 0 0 0 3px #00e5ff, 0 0 20px rgba(0,229,255,0.4);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 100%; height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    overflow: hidden;
+    user-select: none;
+  }
+
+  /* ── LAYOUT ── */
+  #app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  /* ── HEADER ── */
+  #header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 28px 10px;
+    background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 100%);
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    z-index: 30;
+    pointer-events: none;
+    transition: opacity 0.4s;
+  }
+
+  #header.hidden { opacity: 0; }
+
+  .logo {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.3rem;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    text-shadow: 0 0 12px rgba(0,229,255,0.5);
+  }
+  .logo span { color: var(--accent2); }
+
+  .live-badge {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    color: var(--accent2);
+  }
+  .live-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent2);
+    animation: pulse-dot 1.4s ease-in-out infinite;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+  }
+
+  /* ── VIDEO ── */
+  #video-container {
+    position: relative;
+    flex: 1;
+    background: #000;
+    overflow: hidden;
+  }
+
+  #player {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    background: #000;
+  }
+
+  /* scan-line overlay */
+  #video-container::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.04) 2px,
+      rgba(0,0,0,0.04) 4px
+    );
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  /* corner brackets */
+  .corner {
+    position: absolute;
+    width: 24px; height: 24px;
+    z-index: 3;
+    opacity: 0.5;
+    transition: opacity 0.3s;
+  }
+  #video-container:hover .corner { opacity: 1; }
+  .corner-tl { top: 12px; left: 12px; border-top: 2px solid var(--accent); border-left: 2px solid var(--accent); }
+  .corner-tr { top: 12px; right: 12px; border-top: 2px solid var(--accent); border-right: 2px solid var(--accent); }
+  .corner-bl { bottom: 12px; left: 12px; border-bottom: 2px solid var(--accent); border-left: 2px solid var(--accent); }
+  .corner-br { bottom: 12px; right: 12px; border-bottom: 2px solid var(--accent); border-right: 2px solid var(--accent); }
+
+  /* loading spinner */
+  #loading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(5,8,16,0.85);
+    z-index: 10;
+    gap: 16px;
+    transition: opacity 0.3s;
+  }
+  #loading.hidden { opacity: 0; pointer-events: none; }
+  .spinner {
+    width: 48px; height: 48px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+  }
+
+  /* error overlay */
+  #error-msg {
+    position: absolute;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(5,8,16,0.9);
+    z-index: 11;
+    gap: 12px;
+    text-align: center;
+    padding: 40px;
+  }
+  #error-msg .err-icon { font-size: 2.5rem; }
+  #error-msg .err-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--accent2);
+    letter-spacing: 0.1em;
+  }
+  #error-msg .err-body {
+    font-size: 0.9rem;
+    color: var(--dim);
+    max-width: 460px;
+    line-height: 1.6;
+  }
+  #error-msg .err-hint {
+    margin-top: 8px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+  }
+
+  /* ── CAM SIDEBAR ── */
+  #sidebar {
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: 220px;
+    background: linear-gradient(270deg, rgba(12,18,32,0.98) 70%, transparent 100%);
+    display: flex;
+    flex-direction: column;
+    padding: 60px 16px 20px;
+    gap: 6px;
+    z-index: 20;
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    border-left: 1px solid var(--border);
+  }
+  #sidebar.open { transform: translateX(0); }
+
+  .sidebar-title {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--dim);
+    padding: 0 4px 8px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 4px;
+  }
+
+  .cam-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    background: transparent;
+    cursor: pointer;
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    transition: all 0.15s;
+    text-align: left;
+    width: 100%;
+    outline: none;
+  }
+  .cam-btn:focus, .cam-btn:hover {
+    background: rgba(0,229,255,0.08);
+    border-color: var(--accent);
+    color: #fff;
+    box-shadow: var(--focus-glow);
+  }
+  .cam-btn.active {
+    background: rgba(0,229,255,0.12);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .cam-icon {
+    width: 28px; height: 28px;
+    border-radius: 4px;
+    background: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem;
+    flex-shrink: 0;
+  }
+  .cam-btn.active .cam-icon { background: rgba(0,229,255,0.2); }
+
+  /* ── BOTTOM BAR ── */
+  #bottom-bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 24px;
+    background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, transparent 100%);
+    z-index: 20;
+    transition: opacity 0.4s;
+  }
+  #bottom-bar.hidden { opacity: 0; pointer-events: none; }
+
+  .ctrl-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 18px;
+    background: rgba(12,18,32,0.85);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.15s;
+  }
+  .ctrl-btn:focus, .ctrl-btn:hover {
+    background: rgba(0,229,255,0.1);
+    border-color: var(--accent);
+    color: var(--accent);
+    box-shadow: var(--focus-glow);
+  }
+  .ctrl-btn .icon { font-size: 1rem; }
+
+  #cam-label {
+    margin-left: auto;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    color: var(--dim);
+  }
+  #cam-label span { color: var(--accent); }
+
+  /* hint bar */
+  #hints {
+    display: flex;
+    gap: 16px;
+    margin-left: 8px;
+  }
+  .hint {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: var(--dim);
+  }
+  .key {
+    padding: 2px 6px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--text);
+    font-size: 0.65rem;
+    background: var(--surface);
+  }
+
+  /* ── TOAST ── */
+  #toast {
+    position: absolute;
+    top: 60px; left: 50%;
+    transform: translateX(-50%) translateY(-10px);
+    background: rgba(0,229,255,0.12);
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    padding: 8px 20px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    z-index: 50;
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  #toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* ── SETUP SCREEN ── */
+  #setup-screen {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    padding: 40px;
+  }
+  #setup-screen.hidden { display: none; }
+
+  .setup-logo {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 2.2rem;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    text-shadow: 0 0 30px rgba(0,229,255,0.4);
+    margin-bottom: 6px;
+  }
+  .setup-logo span { color: var(--accent2); }
+  .setup-sub {
+    font-size: 0.9rem;
+    color: var(--dim);
+    letter-spacing: 0.1em;
+    margin-bottom: 36px;
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  .setup-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 28px 36px;
+    max-width: 560px;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  .setup-card h2 {
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    margin-bottom: 14px;
+    font-family: 'Share Tech Mono', monospace;
+  }
+  .input-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .setup-input {
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 14px;
+    color: var(--text);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .setup-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(0,229,255,0.2);
+  }
+  .setup-input::placeholder { color: var(--dim); }
+
+  .setup-btn {
+    padding: 10px 20px;
+    background: rgba(0,229,255,0.1);
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    color: var(--accent);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.15s;
+  }
+  .setup-btn:focus, .setup-btn:hover {
+    background: rgba(0,229,255,0.2);
+    box-shadow: var(--focus-glow);
+  }
+  .setup-btn.primary {
+    padding: 12px 32px;
+    font-size: 1rem;
+  }
+
+  .cam-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  .cam-list::-webkit-scrollbar { width: 4px; }
+  .cam-list::-webkit-scrollbar-track { background: transparent; }
+  .cam-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .cam-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 12px;
+  }
+  .cam-item-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    min-width: 80px;
+    color: var(--text);
+  }
+  .cam-item-url {
+    flex: 1;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--dim);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .cam-item-del {
+    background: none;
+    border: none;
+    color: var(--accent2);
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    opacity: 0.6;
+    outline: none;
+    transition: opacity 0.15s;
+  }
+  .cam-item-del:hover, .cam-item-del:focus { opacity: 1; }
+
+  .setup-note {
+    font-size: 0.78rem;
+    color: var(--dim);
+    line-height: 1.6;
+    margin-top: 6px;
+    font-family: 'Share Tech Mono', monospace;
+  }
+  .setup-note a { color: var(--accent); text-decoration: none; }
+  .setup-note .hl { color: var(--accent); }
+
+  .setup-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 4px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ SETUP SCREEN ══ -->
+<div id="setup-screen">
+  <div class="setup-logo">FISH<span>TANK</span>.TV</div>
+  <div class="setup-sub">// FIRE TV VIEWER — FIRST-TIME SETUP</div>
+
+  <div class="setup-card">
+    <h2>// ADD YOUR CAMERA STREAMS</h2>
+    <p class="setup-note" style="margin-bottom:14px;">
+      Paste the <span class="hl">HLS (.m3u8)</span> stream URLs for each Fishtank camera.
+      You can find these by opening fishtank.live on a PC, opening DevTools → Network,
+      filtering by <span class="hl">m3u8</span>, and copying the playlist URLs.
+      Or paste any public HLS stream to test.
+    </p>
+
+    <div class="cam-list" id="cam-list"></div>
+
+    <div class="input-row">
+      <input class="setup-input" id="new-cam-name" placeholder="Label (e.g. Living Room)" />
+      <input class="setup-input" id="new-cam-url" placeholder="https://...stream.m3u8" style="flex:2;" />
+      <button class="setup-btn" id="add-cam-btn" onclick="addCam()">+ ADD</button>
+    </div>
+    <p class="setup-note">
+      Need a test URL? Try: <span class="hl">https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8</span>
+    </p>
+  </div>
+
+  <div class="setup-actions">
+    <button class="setup-btn primary" onclick="launchPlayer()">▶ LAUNCH PLAYER</button>
+  </div>
+  <p class="setup-note" style="margin-top:16px; text-align:center;">
+    Your camera list is saved locally — no re-entry needed after first setup.
+  </p>
+</div>
+
+<!-- ══ PLAYER ══ -->
+<div id="app">
+  <div id="header">
+    <div class="logo">FISH<span>TANK</span>.TV</div>
+    <div class="live-badge"><div class="live-dot"></div>LIVE</div>
+  </div>
+
+  <div id="video-container">
+    <video id="player" autoplay playsinline></video>
+    <div class="corner corner-tl"></div>
+    <div class="corner corner-tr"></div>
+    <div class="corner corner-bl"></div>
+    <div class="corner corner-br"></div>
+    <div id="loading"><div class="spinner"></div><div class="loading-label">CONNECTING...</div></div>
+    <div id="error-msg">
+      <div class="err-icon">📡</div>
+      <div class="err-title">STREAM UNAVAILABLE</div>
+      <div class="err-body">Could not connect to this camera feed. The stream may be offline, or the URL may have changed. Try another camera or update your stream URLs.</div>
+      <div class="err-hint">← / → to switch cameras · MENU to edit streams</div>
+    </div>
+  </div>
+
+  <div id="bottom-bar">
+    <button class="ctrl-btn" id="prev-btn" onclick="prevCam()"><span class="icon">◀</span>PREV CAM</button>
+    <button class="ctrl-btn" id="cams-btn" onclick="toggleSidebar()"><span class="icon">⊞</span>ALL CAMS</button>
+    <button class="ctrl-btn" id="next-btn" onclick="nextCam()">NEXT CAM<span class="icon">▶</span></button>
+    <button class="ctrl-btn" id="setup-btn-main" onclick="openSetup()"><span class="icon">⚙</span>EDIT</button>
+    <div id="cam-label">CAM: <span id="cam-name-label">—</span></div>
+    <div id="hints">
+      <div class="hint"><span class="key">◀▶</span> switch</div>
+      <div class="hint"><span class="key">▲▼</span> menu</div>
+    </div>
+  </div>
+
+  <div id="sidebar">
+    <div class="sidebar-title">// SELECT CAMERA</div>
+    <div id="sidebar-cams"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ── STATE ──
+let cams = [];
+let currentIdx = 0;
+let hls = null;
+let sidebarOpen = false;
+let uiTimeout = null;
+
+const STORAGE_KEY = 'fishtank_cams_v1';
+
+// ── STORAGE ──
+function saveCams() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(cams)); } catch(e) {}
+}
+function loadCams() {
+  try {
+    const d = localStorage.getItem(STORAGE_KEY);
+    if (d) { cams = JSON.parse(d); return true; }
+  } catch(e) {}
+  return false;
+}
+
+// ── SETUP SCREEN ──
+function renderCamList() {
+  const el = document.getElementById('cam-list');
+  if (!cams.length) {
+    el.innerHTML = '<div style="color:var(--dim);font-family:\'Share Tech Mono\',monospace;font-size:0.75rem;padding:8px 0;">No cameras added yet.</div>';
+    return;
+  }
+  el.innerHTML = cams.map((c,i) => `
+    <div class="cam-item">
+      <div class="cam-item-name">${escHtml(c.name)}</div>
+      <div class="cam-item-url">${escHtml(c.url)}</div>
+      <button class="cam-item-del" onclick="removeCam(${i})" title="Remove">✕</button>
+    </div>
+  `).join('');
+}
+
+function addCam() {
+  const nameEl = document.getElementById('new-cam-name');
+  const urlEl = document.getElementById('new-cam-url');
+  const name = nameEl.value.trim() || `Cam ${cams.length + 1}`;
+  const url = urlEl.value.trim();
+  if (!url) { showToast('Enter a stream URL'); return; }
+  cams.push({ name, url });
+  saveCams();
+  nameEl.value = ''; urlEl.value = '';
+  renderCamList();
+}
+
+function removeCam(i) {
+  cams.splice(i, 1);
+  saveCams();
+  renderCamList();
+}
+
+function launchPlayer() {
+  if (!cams.length) { showToast('Add at least one camera stream'); return; }
+  document.getElementById('setup-screen').classList.add('hidden');
+  currentIdx = 0;
+  buildSidebar();
+  loadCam(currentIdx);
+  showUI();
+}
+
+function openSetup() {
+  document.getElementById('setup-screen').classList.remove('hidden');
+  renderCamList();
+}
+
+// ── PLAYER ──
+function loadCam(idx) {
+  if (!cams[idx]) return;
+  currentIdx = idx;
+
+  const video = document.getElementById('player');
+  const loading = document.getElementById('loading');
+  const errorMsg = document.getElementById('error-msg');
+
+  errorMsg.style.display = 'none';
+  loading.classList.remove('hidden');
+  document.getElementById('cam-name-label').textContent = cams[idx].name;
+  updateSidebarActive();
+
+  // tear down old hls
+  if (hls) { hls.destroy(); hls = null; }
+
+  const url = cams[idx].url;
+
+  if (Hls.isSupported()) {
+    hls = new Hls({
+      enableWorker: true,
+      lowLatencyMode: true,
+      maxBufferLength: 8,
+      maxMaxBufferLength: 20,
+      backBufferLength: 10,
+    });
+    hls.loadSource(url);
+    hls.attachMedia(video);
+    hls.on(Hls.Events.MANIFEST_PARSED, () => {
+      loading.classList.add('hidden');
+      video.play().catch(() => {});
+    });
+    hls.on(Hls.Events.ERROR, (e, data) => {
+      if (data.fatal) {
+        loading.classList.add('hidden');
+        errorMsg.style.display = 'flex';
+      }
+    });
+  } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+    // native HLS (Safari-based)
+    video.src = url;
+    video.addEventListener('loadedmetadata', () => {
+      loading.classList.remove('hidden');  // just to be safe
+    }, { once: true });
+    video.addEventListener('canplay', () => {
+      loading.classList.add('hidden');
+      video.play().catch(() => {});
+    }, { once: true });
+    video.addEventListener('error', () => {
+      loading.classList.add('hidden');
+      errorMsg.style.display = 'flex';
+    }, { once: true });
+  } else {
+    loading.classList.add('hidden');
+    errorMsg.style.display = 'flex';
+  }
+}
+
+function prevCam() {
+  if (!cams.length) return;
+  const newIdx = (currentIdx - 1 + cams.length) % cams.length;
+  loadCam(newIdx);
+  showUI();
+}
+
+function nextCam() {
+  if (!cams.length) return;
+  const newIdx = (currentIdx + 1) % cams.length;
+  loadCam(newIdx);
+  showUI();
+}
+
+// ── SIDEBAR ──
+function buildSidebar() {
+  const el = document.getElementById('sidebar-cams');
+  el.innerHTML = cams.map((c, i) => `
+    <button class="cam-btn ${i === currentIdx ? 'active' : ''}" 
+            id="sidebar-cam-${i}"
+            onclick="loadCam(${i}); closeSidebar();">
+      <div class="cam-icon">📷</div>
+      ${escHtml(c.name)}
+    </button>
+  `).join('');
+}
+
+function updateSidebarActive() {
+  cams.forEach((_, i) => {
+    const btn = document.getElementById(`sidebar-cam-${i}`);
+    if (btn) btn.classList.toggle('active', i === currentIdx);
+  });
+}
+
+function toggleSidebar() {
+  sidebarOpen = !sidebarOpen;
+  document.getElementById('sidebar').classList.toggle('open', sidebarOpen);
+  if (sidebarOpen) buildSidebar();
+  showUI();
+}
+
+function closeSidebar() {
+  sidebarOpen = false;
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+// ── UI AUTO-HIDE ──
+function showUI() {
+  document.getElementById('header').classList.remove('hidden');
+  document.getElementById('bottom-bar').classList.remove('hidden');
+  clearTimeout(uiTimeout);
+  uiTimeout = setTimeout(hideUI, 5000);
+}
+
+function hideUI() {
+  if (!sidebarOpen) {
+    document.getElementById('header').classList.add('hidden');
+    document.getElementById('bottom-bar').classList.add('hidden');
+  }
+}
+
+document.addEventListener('mousemove', showUI);
+document.addEventListener('touchstart', showUI);
+
+// ── KEYBOARD / REMOTE ──
+document.addEventListener('keydown', (e) => {
+  showUI();
+  // Fire TV remote: left=37, right=39, up=38, down=40, enter=13, back=8/27, menu=18/82
+  switch(e.keyCode) {
+    case 37: // LEFT → prev cam
+      if (!sidebarOpen) { prevCam(); e.preventDefault(); }
+      break;
+    case 39: // RIGHT → next cam
+      if (!sidebarOpen) { nextCam(); e.preventDefault(); }
+      break;
+    case 38: // UP → show UI / open sidebar
+      if (!sidebarOpen) { toggleSidebar(); e.preventDefault(); }
+      break;
+    case 40: // DOWN → close sidebar
+      if (sidebarOpen) { closeSidebar(); e.preventDefault(); }
+      break;
+    case 13: // SELECT / ENTER
+      if (!sidebarOpen) { toggleSidebar(); e.preventDefault(); }
+      break;
+    case 8:  // BACK
+    case 27: // ESC
+      if (sidebarOpen) { closeSidebar(); e.preventDefault(); }
+      else if (!document.getElementById('setup-screen').classList.contains('hidden')) {
+        // do nothing — stay on setup
+      }
+      break;
+    case 77: // M → edit streams (dev convenience)
+      openSetup();
+      break;
+  }
+});
+
+// ── TOAST ──
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── HELPERS ──
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── PRESET CAMERAS ──
+const PRESET_CAMS = [
+  { name: "Director",     url: "https://streams-g.fishtank.live/hls/live+dirc-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTU4MTMsImV4cCI6MTc3NDQxNzYxM30.SOM_AOjMalQcfOHtXCedbHbMfYjlQXlBS4gQr7CuL6A&video=maxbps" },
+  { name: "Dorm",         url: "https://streams-g.fishtank.live/hls/live+dmrm-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTU4MTMsImV4cCI6MTc3NDQxNzYxM30.SOM_AOjMalQcfOHtXCedbHbMfYjlQXlBS4gQr7CuL6A&video=maxbps" },
+  { name: "Closet",       url: "https://streams-g.fishtank.live/hls/live+dmcl-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTU4MTMsImV4cCI6MTc3NDQxNzYxM30.SOM_AOjMalQcfOHtXCedbHbMfYjlQXlBS4gQr7CuL6A&video=maxbps" },
+  { name: "Bar",          url: "https://streams-g.fishtank.live/hls/live+brrr-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTU4MTMsImV4cCI6MTc3NDQxNzYxM30.SOM_AOjMalQcfOHtXCedbHbMfYjlQXlBS4gQr7CuL6A&video=maxbps" },
+  { name: "Kitchen",      url: "https://streams-h.fishtank.live/hls/live+ktch-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Hallway",      url: "https://streams-h.fishtank.live/hls/live+hwdn-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Jacuzzi",      url: "https://streams-h.fishtank.live/hls/live+jckz-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Bar PTZ",      url: "https://streams-h.fishtank.live/hls/live+brpz-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Dining Room",  url: "https://streams-h.fishtank.live/hls/live+dnrm-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Market",       url: "https://streams-h.fishtank.live/hls/live+mrke-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Foyer",        url: "https://streams-h.fishtank.live/hls/live+foyr-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Glassroom",    url: "https://streams-h.fishtank.live/hls/live+gsrm-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Computer Lab", url: "https://streams-h.fishtank.live/hls/live+bbcl-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Confessional", url: "https://streams-h.fishtank.live/hls/live+cfsl-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Corridor",     url: "https://streams-h.fishtank.live/hls/live+codr-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "West Wing",    url: "https://streams-h.fishtank.live/hls/live+hwup-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "East Wing",    url: "https://streams-h.fishtank.live/hls/live+bkny-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Jungle Room",  url: "https://streams-h.fishtank.live/hls/live+br4j-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+];
+
+// ── INIT ──
+(function init() {
+  const hasCams = loadCams();
+  if (!hasCams || cams.length === 0) {
+    cams = [...PRESET_CAMS];
+    saveCams();
+  }
+  renderCamList();
+  launchPlayer();
+})();
+</script>
+</body>
+</html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fishtank TV</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.4.12/hls.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap');
+
+  :root {<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fishtank TV</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.4.12/hls.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap');
+
+  :root {
+    --bg: #050810;
+    --surface: #0c1220;
+    --border: #1a2a3a;
+    --accent: #00e5ff;
+    --accent2: #ff3d6b;
+    --text: #c8dce8;
+    --dim: #4a6070;
+    --focus-glow: 0 0 0 3px #00e5ff, 0 0 20px rgba(0,229,255,0.4);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 100%; height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    overflow: hidden;
+    user-select: none;
+  }
+
+  /* ── LAYOUT ── */
+  #app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  /* ── HEADER ── */
+  #header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 28px 10px;
+    background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 100%);
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    z-index: 30;
+    pointer-events: none;
+    transition: opacity 0.4s;
+  }
+
+  #header.hidden { opacity: 0; }
+
+  .logo {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.3rem;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    text-shadow: 0 0 12px rgba(0,229,255,0.5);
+  }
+  .logo span { color: var(--accent2); }
+
+  .live-badge {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    color: var(--accent2);
+  }
+  .live-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent2);
+    animation: pulse-dot 1.4s ease-in-out infinite;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+  }
+
+  /* ── VIDEO ── */
+  #video-container {
+    position: relative;
+    flex: 1;
+    background: #000;
+    overflow: hidden;
+  }
+
+  #player {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    background: #000;
+  }
+
+  /* scan-line overlay */
+  #video-container::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.04) 2px,
+      rgba(0,0,0,0.04) 4px
+    );
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  /* corner brackets */
+  .corner {
+    position: absolute;
+    width: 24px; height: 24px;
+    z-index: 3;
+    opacity: 0.5;
+    transition: opacity 0.3s;
+  }
+  #video-container:hover .corner { opacity: 1; }
+  .corner-tl { top: 12px; left: 12px; border-top: 2px solid var(--accent); border-left: 2px solid var(--accent); }
+  .corner-tr { top: 12px; right: 12px; border-top: 2px solid var(--accent); border-right: 2px solid var(--accent); }
+  .corner-bl { bottom: 12px; left: 12px; border-bottom: 2px solid var(--accent); border-left: 2px solid var(--accent); }
+  .corner-br { bottom: 12px; right: 12px; border-bottom: 2px solid var(--accent); border-right: 2px solid var(--accent); }
+
+  /* loading spinner */
+  #loading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(5,8,16,0.85);
+    z-index: 10;
+    gap: 16px;
+    transition: opacity 0.3s;
+  }
+  #loading.hidden { opacity: 0; pointer-events: none; }
+  .spinner {
+    width: 48px; height: 48px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+  }
+
+  /* error overlay */
+  #error-msg {
+    position: absolute;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(5,8,16,0.9);
+    z-index: 11;
+    gap: 12px;
+    text-align: center;
+    padding: 40px;
+  }
+  #error-msg .err-icon { font-size: 2.5rem; }
+  #error-msg .err-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--accent2);
+    letter-spacing: 0.1em;
+  }
+  #error-msg .err-body {
+    font-size: 0.9rem;
+    color: var(--dim);
+    max-width: 460px;
+    line-height: 1.6;
+  }
+  #error-msg .err-hint {
+    margin-top: 8px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+  }
+
+  /* ── CAM SIDEBAR ── */
+  #sidebar {
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: 220px;
+    background: linear-gradient(270deg, rgba(12,18,32,0.98) 70%, transparent 100%);
+    display: flex;
+    flex-direction: column;
+    padding: 60px 16px 20px;
+    gap: 6px;
+    z-index: 20;
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    border-left: 1px solid var(--border);
+  }
+  #sidebar.open { transform: translateX(0); }
+
+  .sidebar-title {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--dim);
+    padding: 0 4px 8px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 4px;
+  }
+
+  .cam-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    background: transparent;
+    cursor: pointer;
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    transition: all 0.15s;
+    text-align: left;
+    width: 100%;
+    outline: none;
+  }
+  .cam-btn:focus, .cam-btn:hover {
+    background: rgba(0,229,255,0.08);
+    border-color: var(--accent);
+    color: #fff;
+    box-shadow: var(--focus-glow);
+  }
+  .cam-btn.active {
+    background: rgba(0,229,255,0.12);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .cam-icon {
+    width: 28px; height: 28px;
+    border-radius: 4px;
+    background: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem;
+    flex-shrink: 0;
+  }
+  .cam-btn.active .cam-icon { background: rgba(0,229,255,0.2); }
+
+  /* ── BOTTOM BAR ── */
+  #bottom-bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 24px;
+    background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, transparent 100%);
+    z-index: 20;
+    transition: opacity 0.4s;
+  }
+  #bottom-bar.hidden { opacity: 0; pointer-events: none; }
+
+  .ctrl-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 18px;
+    background: rgba(12,18,32,0.85);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.15s;
+  }
+  .ctrl-btn:focus, .ctrl-btn:hover {
+    background: rgba(0,229,255,0.1);
+    border-color: var(--accent);
+    color: var(--accent);
+    box-shadow: var(--focus-glow);
+  }
+  .ctrl-btn .icon { font-size: 1rem; }
+
+  #cam-label {
+    margin-left: auto;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    color: var(--dim);
+  }
+  #cam-label span { color: var(--accent); }
+
+  /* hint bar */
+  #hints {
+    display: flex;
+    gap: 16px;
+    margin-left: 8px;
+  }
+  .hint {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: var(--dim);
+  }
+  .key {
+    padding: 2px 6px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--text);
+    font-size: 0.65rem;
+    background: var(--surface);
+  }
+
+  /* ── TOAST ── */
+  #toast {
+    position: absolute;
+    top: 60px; left: 50%;
+    transform: translateX(-50%) translateY(-10px);
+    background: rgba(0,229,255,0.12);
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    padding: 8px 20px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    z-index: 50;
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  #toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* ── SETUP SCREEN ── */
+  #setup-screen {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    padding: 40px;
+  }
+  #setup-screen.hidden { display: none; }
+
+  .setup-logo {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 2.2rem;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    text-shadow: 0 0 30px rgba(0,229,255,0.4);
+    margin-bottom: 6px;
+  }
+  .setup-logo span { color: var(--accent2); }
+  .setup-sub {
+    font-size: 0.9rem;
+    color: var(--dim);
+    letter-spacing: 0.1em;
+    margin-bottom: 36px;
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  .setup-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 28px 36px;
+    max-width: 560px;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  .setup-card h2 {
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    margin-bottom: 14px;
+    font-family: 'Share Tech Mono', monospace;
+  }
+  .input-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .setup-input {
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 14px;
+    color: var(--text);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .setup-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(0,229,255,0.2);
+  }
+  .setup-input::placeholder { color: var(--dim); }
+
+  .setup-btn {
+    padding: 10px 20px;
+    background: rgba(0,229,255,0.1);
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    color: var(--accent);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.15s;
+  }
+  .setup-btn:focus, .setup-btn:hover {
+    background: rgba(0,229,255,0.2);
+    box-shadow: var(--focus-glow);
+  }
+  .setup-btn.primary {
+    padding: 12px 32px;
+    font-size: 1rem;
+  }
+
+  .cam-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  .cam-list::-webkit-scrollbar { width: 4px; }
+  .cam-list::-webkit-scrollbar-track { background: transparent; }
+  .cam-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .cam-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 12px;
+  }
+  .cam-item-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    min-width: 80px;
+    color: var(--text);
+  }
+  .cam-item-url {
+    flex: 1;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--dim);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .cam-item-del {
+    background: none;
+    border: none;
+    color: var(--accent2);
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    opacity: 0.6;
+    outline: none;
+    transition: opacity 0.15s;
+  }
+  .cam-item-del:hover, .cam-item-del:focus { opacity: 1; }
+
+  .setup-note {
+    font-size: 0.78rem;
+    color: var(--dim);
+    line-height: 1.6;
+    margin-top: 6px;
+    font-family: 'Share Tech Mono', monospace;
+  }
+  .setup-note a { color: var(--accent); text-decoration: none; }
+  .setup-note .hl { color: var(--accent); }
+
+  .setup-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 4px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ SETUP SCREEN ══ -->
+<div id="setup-screen">
+  <div class="setup-logo">FISH<span>TANK</span>.TV</div>
+  <div class="setup-sub">// FIRE TV VIEWER — FIRST-TIME SETUP</div>
+
+  <div class="setup-card">
+    <h2>// ADD YOUR CAMERA STREAMS</h2>
+    <p class="setup-note" style="margin-bottom:14px;">
+      Paste the <span class="hl">HLS (.m3u8)</span> stream URLs for each Fishtank camera.
+      You can find these by opening fishtank.live on a PC, opening DevTools → Network,
+      filtering by <span class="hl">m3u8</span>, and copying the playlist URLs.
+      Or paste any public HLS stream to test.
+    </p>
+
+    <div class="cam-list" id="cam-list"></div>
+
+    <div class="input-row">
+      <input class="setup-input" id="new-cam-name" placeholder="Label (e.g. Living Room)" />
+      <input class="setup-input" id="new-cam-url" placeholder="https://...stream.m3u8" style="flex:2;" />
+      <button class="setup-btn" id="add-cam-btn" onclick="addCam()">+ ADD</button>
+    </div>
+    <p class="setup-note">
+      Need a test URL? Try: <span class="hl">https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8</span>
+    </p>
+  </div>
+
+  <div class="setup-actions">
+    <button class="setup-btn primary" onclick="launchPlayer()">▶ LAUNCH PLAYER</button>
+  </div>
+  <p class="setup-note" style="margin-top:16px; text-align:center;">
+    Your camera list is saved locally — no re-entry needed after first setup.
+  </p>
+</div>
+
+<!-- ══ PLAYER ══ -->
+<div id="app">
+  <div id="header">
+    <div class="logo">FISH<span>TANK</span>.TV</div>
+    <div class="live-badge"><div class="live-dot"></div>LIVE</div>
+  </div>
+
+  <div id="video-container">
+    <video id="player" autoplay playsinline></video>
+    <div class="corner corner-tl"></div>
+    <div class="corner corner-tr"></div>
+    <div class="corner corner-bl"></div>
+    <div class="corner corner-br"></div>
+    <div id="loading"><div class="spinner"></div><div class="loading-label">CONNECTING...</div></div>
+    <div id="error-msg">
+      <div class="err-icon">📡</div>
+      <div class="err-title">STREAM UNAVAILABLE</div>
+      <div class="err-body">Could not connect to this camera feed. The stream may be offline, or the URL may have changed. Try another camera or update your stream URLs.</div>
+      <div class="err-hint">← / → to switch cameras · MENU to edit streams</div>
+    </div>
+  </div>
+
+  <div id="bottom-bar">
+    <button class="ctrl-btn" id="prev-btn" onclick="prevCam()"><span class="icon">◀</span>PREV CAM</button>
+    <button class="ctrl-btn" id="cams-btn" onclick="toggleSidebar()"><span class="icon">⊞</span>ALL CAMS</button>
+    <button class="ctrl-btn" id="next-btn" onclick="nextCam()">NEXT CAM<span class="icon">▶</span></button>
+    <button class="ctrl-btn" id="setup-btn-main" onclick="openSetup()"><span class="icon">⚙</span>EDIT</button>
+    <div id="cam-label">CAM: <span id="cam-name-label">—</span></div>
+    <div id="hints">
+      <div class="hint"><span class="key">◀▶</span> switch</div>
+      <div class="hint"><span class="key">▲▼</span> menu</div>
+    </div>
+  </div>
+
+  <div id="sidebar">
+    <div class="sidebar-title">// SELECT CAMERA</div>
+    <div id="sidebar-cams"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ── STATE ──
+let cams = [];
+let currentIdx = 0;
+let hls = null;
+let sidebarOpen = false;
+let uiTimeout = null;
+
+const STORAGE_KEY = 'fishtank_cams_v1';
+
+// ── STORAGE ──
+function saveCams() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(cams)); } catch(e) {}
+}
+function loadCams() {
+  try {
+    const d = localStorage.getItem(STORAGE_KEY);
+    if (d) { cams = JSON.parse(d); return true; }
+  } catch(e) {}
+  return false;
+}
+
+// ── SETUP SCREEN ──
+function renderCamList() {
+  const el = document.getElementById('cam-list');
+  if (!cams.length) {
+    el.innerHTML = '<div style="color:var(--dim);font-family:\'Share Tech Mono\',monospace;font-size:0.75rem;padding:8px 0;">No cameras added yet.</div>';
+    return;
+  }
+  el.innerHTML = cams.map((c,i) => `
+    <div class="cam-item">
+      <div class="cam-item-name">${escHtml(c.name)}</div>
+      <div class="cam-item-url">${escHtml(c.url)}</div>
+      <button class="cam-item-del" onclick="removeCam(${i})" title="Remove">✕</button>
+    </div>
+  `).join('');
+}
+
+function addCam() {
+  const nameEl = document.getElementById('new-cam-name');
+  const urlEl = document.getElementById('new-cam-url');
+  const name = nameEl.value.trim() || `Cam ${cams.length + 1}`;
+  const url = urlEl.value.trim();
+  if (!url) { showToast('Enter a stream URL'); return; }
+  cams.push({ name, url });
+  saveCams();
+  nameEl.value = ''; urlEl.value = '';
+  renderCamList();
+}
+
+function removeCam(i) {
+  cams.splice(i, 1);
+  saveCams();
+  renderCamList();
+}
+
+function launchPlayer() {
+  if (!cams.length) { showToast('Add at least one camera stream'); return; }
+  document.getElementById('setup-screen').classList.add('hidden');
+  currentIdx = 0;
+  buildSidebar();
+  loadCam(currentIdx);
+  showUI();
+}
+
+function openSetup() {
+  document.getElementById('setup-screen').classList.remove('hidden');
+  renderCamList();
+}
+
+// ── PLAYER ──
+function loadCam(idx) {
+  if (!cams[idx]) return;
+  currentIdx = idx;
+
+  const video = document.getElementById('player');
+  const loading = document.getElementById('loading');
+  const errorMsg = document.getElementById('error-msg');
+
+  errorMsg.style.display = 'none';
+  loading.classList.remove('hidden');
+  document.getElementById('cam-name-label').textContent = cams[idx].name;
+  updateSidebarActive();
+
+  // tear down old hls
+  if (hls) { hls.destroy(); hls = null; }
+
+  const url = cams[idx].url;
+
+  if (Hls.isSupported()) {
+    hls = new Hls({
+      enableWorker: true,
+      lowLatencyMode: true,
+      maxBufferLength: 8,
+      maxMaxBufferLength: 20,
+      backBufferLength: 10,
+    });
+    hls.loadSource(url);
+    hls.attachMedia(video);
+    hls.on(Hls.Events.MANIFEST_PARSED, () => {
+      loading.classList.add('hidden');
+      video.play().catch(() => {});
+    });
+    hls.on(Hls.Events.ERROR, (e, data) => {
+      if (data.fatal) {
+        loading.classList.add('hidden');
+        errorMsg.style.display = 'flex';
+      }
+    });
+  } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+    // native HLS (Safari-based)
+    video.src = url;
+    video.addEventListener('loadedmetadata', () => {
+      loading.classList.remove('hidden');  // just to be safe
+    }, { once: true });
+    video.addEventListener('canplay', () => {
+      loading.classList.add('hidden');
+      video.play().catch(() => {});
+    }, { once: true });
+    video.addEventListener('error', () => {
+      loading.classList.add('hidden');
+      errorMsg.style.display = 'flex';
+    }, { once: true });
+  } else {
+    loading.classList.add('hidden');
+    errorMsg.style.display = 'flex';
+  }
+}
+
+function prevCam() {
+  if (!cams.length) return;
+  const newIdx = (currentIdx - 1 + cams.length) % cams.length;
+  loadCam(newIdx);
+  showUI();
+}
+
+function nextCam() {
+  if (!cams.length) return;
+  const newIdx = (currentIdx + 1) % cams.length;
+  loadCam(newIdx);
+  showUI();
+}
+
+// ── SIDEBAR ──
+function buildSidebar() {
+  const el = document.getElementById('sidebar-cams');
+  el.innerHTML = cams.map((c, i) => `
+    <button class="cam-btn ${i === currentIdx ? 'active' : ''}" 
+            id="sidebar-cam-${i}"
+            onclick="loadCam(${i}); closeSidebar();">
+      <div class="cam-icon">📷</div>
+      ${escHtml(c.name)}
+    </button>
+  `).join('');
+}
+
+function updateSidebarActive() {
+  cams.forEach((_, i) => {
+    const btn = document.getElementById(`sidebar-cam-${i}`);
+    if (btn) btn.classList.toggle('active', i === currentIdx);
+  });
+}
+
+function toggleSidebar() {
+  sidebarOpen = !sidebarOpen;
+  document.getElementById('sidebar').classList.toggle('open', sidebarOpen);
+  if (sidebarOpen) buildSidebar();
+  showUI();
+}
+
+function closeSidebar() {
+  sidebarOpen = false;
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+// ── UI AUTO-HIDE ──
+function showUI() {
+  document.getElementById('header').classList.remove('hidden');
+  document.getElementById('bottom-bar').classList.remove('hidden');
+  clearTimeout(uiTimeout);
+  uiTimeout = setTimeout(hideUI, 5000);
+}
+
+function hideUI() {
+  if (!sidebarOpen) {
+    document.getElementById('header').classList.add('hidden');
+    document.getElementById('bottom-bar').classList.add('hidden');
+  }
+}
+
+document.addEventListener('mousemove', showUI);
+document.addEventListener('touchstart', showUI);
+
+// ── KEYBOARD / REMOTE ──
+document.addEventListener('keydown', (e) => {
+  showUI();
+  // Fire TV remote: left=37, right=39, up=38, down=40, enter=13, back=8/27, menu=18/82
+  switch(e.keyCode) {
+    case 37: // LEFT → prev cam
+      if (!sidebarOpen) { prevCam(); e.preventDefault(); }
+      break;
+    case 39: // RIGHT → next cam
+      if (!sidebarOpen) { nextCam(); e.preventDefault(); }
+      break;
+    case 38: // UP → show UI / open sidebar
+      if (!sidebarOpen) { toggleSidebar(); e.preventDefault(); }
+      break;
+    case 40: // DOWN → close sidebar
+      if (sidebarOpen) { closeSidebar(); e.preventDefault(); }
+      break;
+    case 13: // SELECT / ENTER
+      if (!sidebarOpen) { toggleSidebar(); e.preventDefault(); }
+      break;
+    case 8:  // BACK
+    case 27: // ESC
+      if (sidebarOpen) { closeSidebar(); e.preventDefault(); }
+      else if (!document.getElementById('setup-screen').classList.contains('hidden')) {
+        // do nothing — stay on setup
+      }
+      break;
+    case 77: // M → edit streams (dev convenience)
+      openSetup();
+      break;
+  }
+});
+
+// ── TOAST ──
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── HELPERS ──
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── PRESET CAMERAS ──
+const PRESET_CAMS = [
+  { name: "Director",     url: "https://streams-g.fishtank.live/hls/live+dirc-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTU4MTMsImV4cCI6MTc3NDQxNzYxM30.SOM_AOjMalQcfOHtXCedbHbMfYjlQXlBS4gQr7CuL6A&video=maxbps" },
+  { name: "Dorm",         url: "https://streams-g.fishtank.live/hls/live+dmrm-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTU4MTMsImV4cCI6MTc3NDQxNzYxM30.SOM_AOjMalQcfOHtXCedbHbMfYjlQXlBS4gQr7CuL6A&video=maxbps" },
+  { name: "Closet",       url: "https://streams-g.fishtank.live/hls/live+dmcl-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTU4MTMsImV4cCI6MTc3NDQxNzYxM30.SOM_AOjMalQcfOHtXCedbHbMfYjlQXlBS4gQr7CuL6A&video=maxbps" },
+  { name: "Bar",          url: "https://streams-g.fishtank.live/hls/live+brrr-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTU4MTMsImV4cCI6MTc3NDQxNzYxM30.SOM_AOjMalQcfOHtXCedbHbMfYjlQXlBS4gQr7CuL6A&video=maxbps" },
+  { name: "Kitchen",      url: "https://streams-h.fishtank.live/hls/live+ktch-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Hallway",      url: "https://streams-h.fishtank.live/hls/live+hwdn-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Jacuzzi",      url: "https://streams-h.fishtank.live/hls/live+jckz-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Bar PTZ",      url: "https://streams-h.fishtank.live/hls/live+brpz-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Dining Room",  url: "https://streams-h.fishtank.live/hls/live+dnrm-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Market",       url: "https://streams-h.fishtank.live/hls/live+mrke-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Foyer",        url: "https://streams-h.fishtank.live/hls/live+foyr-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Glassroom",    url: "https://streams-h.fishtank.live/hls/live+gsrm-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Computer Lab", url: "https://streams-h.fishtank.live/hls/live+bbcl-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Confessional", url: "https://streams-h.fishtank.live/hls/live+cfsl-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Corridor",     url: "https://streams-h.fishtank.live/hls/live+codr-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "West Wing",    url: "https://streams-h.fishtank.live/hls/live+hwup-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "East Wing",    url: "https://streams-h.fishtank.live/hls/live+bkny-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+  { name: "Jungle Room",  url: "https://streams-h.fishtank.live/hls/live+br4j-5/index.m3u8?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E&video=maxbps" },
+];
+
+// ── INIT ──
+(function init() {
+  const hasCams = loadCams();
+  if (!hasCams || cams.length === 0) {
+    cams = [...PRESET_CAMS];
+    saveCams();
+  }
+  renderCamList();
+  launchPlayer();
+})();
+</script>
+</body>
+</html>
+
+    --bg: #050810;
+    --surface: #0c1220;
+    --border: #1a2a3a;
+    --accent: #00e5ff;
+    --accent2: #ff3d6b;
+    --text: #c8dce8;
+    --dim: #4a6070;
+    --focus-glow: 0 0 0 3px #00e5ff, 0 0 20px rgba(0,229,255,0.4);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 100%; height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    overflow: hidden;
+    user-select: none;
+  }
+
+  /* ── LAYOUT ── */
+  #app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  /* ── HEADER ── */
+  #header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 28px 10px;
+    background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 100%);
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    z-index: 30;
+    pointer-events: none;
+    transition: opacity 0.4s;
+  }
+
+  #header.hidden { opacity: 0; }
+
+  .logo {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.3rem;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    text-shadow: 0 0 12px rgba(0,229,255,0.5);
+  }
+  .logo span { color: var(--accent2); }
+
+  .live-badge {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    color: var(--accent2);
+  }
+  .live-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent2);
+    animation: pulse-dot 1.4s ease-in-out infinite;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+  }
+
+  /* ── VIDEO ── */
+  #video-container {
+    position: relative;
+    flex: 1;
+    background: #000;
+    overflow: hidden;
+  }
+
+  #player {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    background: #000;
+  }
+
+  /* scan-line overlay */
+  #video-container::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.04) 2px,
+      rgba(0,0,0,0.04) 4px
+    );
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  /* corner brackets */
+  .corner {
+    position: absolute;
+    width: 24px; height: 24px;
+    z-index: 3;
+    opacity: 0.5;
+    transition: opacity 0.3s;
+  }
+  #video-container:hover .corner { opacity: 1; }
+  .corner-tl { top: 12px; left: 12px; border-top: 2px solid var(--accent); border-left: 2px solid var(--accent); }
+  .corner-tr { top: 12px; right: 12px; border-top: 2px solid var(--accent); border-right: 2px solid var(--accent); }
+  .corner-bl { bottom: 12px; left: 12px; border-bottom: 2px solid var(--accent); border-left: 2px solid var(--accent); }
+  .corner-br { bottom: 12px; right: 12px; border-bottom: 2px solid var(--accent); border-right: 2px solid var(--accent); }
+
+  /* loading spinner */
+  #loading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(5,8,16,0.85);
+    z-index: 10;
+    gap: 16px;
+    transition: opacity 0.3s;
+  }
+  #loading.hidden { opacity: 0; pointer-events: none; }
+  .spinner {
+    width: 48px; height: 48px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+  }
+
+  /* error overlay */
+  #error-msg {
+    position: absolute;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(5,8,16,0.9);
+    z-index: 11;
+    gap: 12px;
+    text-align: center;
+    padding: 40px;
+  }
+  #error-msg .err-icon { font-size: 2.5rem; }
+  #error-msg .err-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--accent2);
+    letter-spacing: 0.1em;
+  }
+  #error-msg .err-body {
+    font-size: 0.9rem;
+    color: var(--dim);
+    max-width: 460px;
+    line-height: 1.6;
+  }
+  #error-msg .err-hint {
+    margin-top: 8px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+  }
+
+  /* ── CAM SIDEBAR ── */
+  #sidebar {
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: 220px;
+    background: linear-gradient(270deg, rgba(12,18,32,0.98) 70%, transparent 100%);
+    display: flex;
+    flex-direction: column;
+    padding: 60px 16px 20px;
+    gap: 6px;
+    z-index: 20;
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    border-left: 1px solid var(--border);
+  }
+  #sidebar.open { transform: translateX(0); }
+
+  .sidebar-title {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--dim);
+    padding: 0 4px 8px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 4px;
+  }
+
+  .cam-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    background: transparent;
+    cursor: pointer;
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    transition: all 0.15s;
+    text-align: left;
+    width: 100%;
+    outline: none;
+  }
+  .cam-btn:focus, .cam-btn:hover {
+    background: rgba(0,229,255,0.08);
+    border-color: var(--accent);
+    color: #fff;
+    box-shadow: var(--focus-glow);
+  }
+  .cam-btn.active {
+    background: rgba(0,229,255,0.12);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .cam-icon {
+    width: 28px; height: 28px;
+    border-radius: 4px;
+    background: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem;
+    flex-shrink: 0;
+  }
+  .cam-btn.active .cam-icon { background: rgba(0,229,255,0.2); }
+
+  /* ── BOTTOM BAR ── */
+  #bottom-bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 24px;
+    background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, transparent 100%);
+    z-index: 20;
+    transition: opacity 0.4s;
+  }
+  #bottom-bar.hidden { opacity: 0; pointer-events: none; }
+
+  .ctrl-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 18px;
+    background: rgba(12,18,32,0.85);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.15s;
+  }
+  .ctrl-btn:focus, .ctrl-btn:hover {
+    background: rgba(0,229,255,0.1);
+    border-color: var(--accent);
+    color: var(--accent);
+    box-shadow: var(--focus-glow);
+  }
+  .ctrl-btn .icon { font-size: 1rem; }
+
+  #cam-label {
+    margin-left: auto;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    color: var(--dim);
+  }
+  #cam-label span { color: var(--accent); }
+
+  /* hint bar */
+  #hints {
+    display: flex;
+    gap: 16px;
+    margin-left: 8px;
+  }
+  .hint {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: var(--dim);
+  }
+  .key {
+    padding: 2px 6px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--text);
+    font-size: 0.65rem;
+    background: var(--surface);
+  }
+
+  /* ── TOAST ── */
+  #toast {
+    position: absolute;
+    top: 60px; left: 50%;
+    transform: translateX(-50%) translateY(-10px);
+    background: rgba(0,229,255,0.12);
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    padding: 8px 20px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    z-index: 50;
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  #toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* ── SETUP SCREEN ── */
+  #setup-screen {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    padding: 40px;
+  }
+  #setup-screen.hidden { display: none; }
+
+  .setup-logo {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 2.2rem;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    text-shadow: 0 0 30px rgba(0,229,255,0.4);
+    margin-bottom: 6px;
+  }
+  .setup-logo span { color: var(--accent2); }
+  .setup-sub {
+    font-size: 0.9rem;
+    color: var(--dim);
+    letter-spacing: 0.1em;
+    margin-bottom: 36px;
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  .setup-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 28px 36px;
+    max-width: 560px;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  .setup-card h2 {
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    margin-bottom: 14px;
+    font-family: 'Share Tech Mono', monospace;
+  }
+  .input-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .setup-input {
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 14px;
+    color: var(--text);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .setup-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(0,229,255,0.2);
+  }
+  .setup-input::placeholder { color: var(--dim); }
+
+  .setup-btn {
+    padding: 10px 20px;
+    background: rgba(0,229,255,0.1);
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    color: var(--accent);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.15s;
+  }
+  .setup-btn:focus, .setup-btn:hover {
+    background: rgba(0,229,255,0.2);
+    box-shadow: var(--focus-glow);
+  }
+  .setup-btn.primary {
+    padding: 12px 32px;
+    font-size: 1rem;
+  }
+
+  .cam-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  .cam-list::-webkit-scrollbar { width: 4px; }
+  .cam-list::-webkit-scrollbar-track { background: transparent; }
+  .cam-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .cam-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 12px;
+  }
+  .cam-item-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    min-width: 80px;
+    color: var(--text);
+  }
+  .cam-item-url {
+    flex: 1;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--dim);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .cam-item-del {
+    background: none;
+    border: none;
+    color: var(--accent2);
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    opacity: 0.6;
+    outline: none;
+    transition: opacity 0.15s;
+  }
+  .cam-item-del:hover, .cam-item-del:focus { opacity: 1; }
+
+  .setup-note {
+    font-size: 0.78rem;
+    color: var(--dim);
+    line-height: 1.6;
+    margin-top: 6px;
+    font-family: 'Share Tech Mono', monospace;
+  }
+  .setup-note a { color: var(--accent); text-decoration: none; }
+  .setup-note .hl { color: var(--accent); }
+
+  .setup-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 4px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ SETUP SCREEN ══ -->
+<div id="setup-screen">
+  <div class="setup-logo">FISH<span>TANK</span>.TV</div>
+  <div class="setup-sub">// FIRE TV VIEWER — FIRST-TIME SETUP</div>
+
+  <div class="setup-card">
+    <h2>// ADD YOUR CAMERA STREAMS</h2>
+    <p class="setup-note" style="margin-bottom:14px;">
+      Paste the <span class="hl">HLS (.m3u8)</span> stream URLs for each Fishtank camera.
+      You can find these by opening fishtank.live on a PC, opening DevTools → Network,
+      filtering by <span class="hl">m3u8</span>, and copying the playlist URLs.
+      Or paste any public HLS stream to test.
+    </p>
+
+    <div class="cam-list" id="cam-list"></div>
+
+    <div class="input-row">
+      <input class="setup-input" id="new-cam-name" placeholder="Label (e.g. Living Room)" />
+      <input class="setup-input" id="new-cam-url" placeholder="https://...stream.m3u8" style="flex:2;" />
+      <button class="setup-btn" id="add-cam-btn" onclick="addCam()">+ ADD</button>
+    </div>
+    <p class="setup-note">
+      Need a test URL? Try: <span class="hl">https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8</span>
+    </p>
+  </div>
+
+  <div class="setup-actions">
+    <button class="setup-btn primary" onclick="launchPlayer()">▶ LAUNCH PLAYER</button>
+  </div>
+  <p class="setup-note" style="margin-top:16px; text-align:center;">
+    Your camera list is saved locally — no re-entry needed after first setup.
+  </p>
+</div>
+
+<!-- ══ PLAYER ══ -->
+<div id="app">
+  <div id="header">
+    <div class="logo">FISH<span>TANK</span>.TV</div>
+    <div class="live-badge"><div class="live-dot"></div>LIVE</div>
+  </div>
+
+  <div id="video-container">
+    <video id="player" autoplay playsinline></video>
+    <div class="corner corner-tl"></div>
+    <div class="corner corner-tr"></div>
+    <div class="corner corner-bl"></div>
+    <div class="corner corner-br"></div>
+    <div id="loading"><div class="spinner"></div><div class="loading-label">CONNECTING...</div></div>
+    <div id="error-msg">
+      <div class="err-icon">📡</div>
+      <div class="err-title">STREAM UNAVAILABLE</div>
+      <div class="err-body">Could not connect to this camera feed. The stream may be offline, or the URL may have changed. Try another camera or update your stream URLs.</div>
+      <div class="err-hint">← / → to switch cameras · MENU to edit streams</div>
+    </div>
+  </div>
+
+  <div id="bottom-bar">
+    <button class="ctrl-btn" id="prev-btn" onclick="prevCam()"><span class="icon">◀</span>PREV CAM</button>
+    <button class="ctrl-btn" id="cams-btn" onclick="toggleSidebar()"><span class="icon">⊞</span>ALL CAMS</button>
+    <button class="ctrl-btn" id="next-btn" onclick="nextCam()">NEXT CAM<span class="icon">▶</span></button>
+    <button class="ctrl-btn" id="setup-btn-main" onclick="openSetup()"><span class="icon">⚙</span>EDIT</button>
+    <div id="cam-label">CAM: <span id="cam-name-label">—</span></div>
+    <div id="hints">
+      <div class="hint"><span class="key">◀▶</span> switch</div>
+      <div class="hint"><span class="key">▲▼</span> menu</div>
+    </div>
+  </div>
+
+  <div id="sidebar">
+    <div class="sidebar-title">// SELECT CAMERA</div>
+    <div id="sidebar-cams"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ── STATE ──
+let cams = [];
+let currentIdx = 0;
+let hls = null;
+let sidebarOpen = false;
+let uiTimeout = null;
+
+const STORAGE_KEY = 'fishtank_cams_v1';
+
+// ── STORAGE ──
+function saveCams() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(cams)); } catch(e) {}
+}
+function loadCams() {
+  try {
+    const d = localStorage.getItem(STORAGE_KEY);
+    if (d) { cams = JSON.parse(d); return true; }
+  } catch(e) {}
+  return false;
+}
+
+// ── SETUP SCREEN ──
+function renderCamList() {
+  const el = document.getElementById('cam-list');
+  if (!cams.length) {
+    el.innerHTML = '<div style="color:var(--dim);font-family:\'Share Tech Mono\',monospace;font-size:0.75rem;padding:8px 0;">No cameras added yet.</div>';
+    return;
+  }
+  el.innerHTML = cams.map((c,i) => `
+    <div class="cam-item">
+      <div class="cam-item-name">${escHtml(c.name)}</div>
+      <div class="cam-item-url">${escHtml(c.url)}</div>
+      <button class="cam-item-del" onclick="removeCam(${i})" title="Remove">✕</button>
+    </div>
+  `).join('');
+}
+
+function addCam() {
+  const nameEl = document.getElementById('new-cam-name');
+  const urlEl = document.getElementById('new-cam-url');
+  const name = nameEl.value.trim() || `Cam ${cams.length + 1}`;
+  const url = urlEl.value.trim();
+  if (!url) { showToast('Enter a stream URL'); return; }
+  cams.push({ name, url });
+  saveCams();
+  nameEl.value = ''; urlEl.value = '';
+  renderCamList();
+}
+
+function removeCam(i) {
+  cams.splice(i, 1);
+  saveCams();
+  renderCamList();
+}
+
+function launchPlayer() {
+  if (!cams.length) { showToast('Add at least one camera stream'); return; }
+  document.getElementById('setup-screen').classList.add('hidden');
+  currentIdx = 0;
+  buildSidebar();
+  loadCam(currentIdx);
+  showUI();
+}
+
+function openSetup() {
+  document.getElementById('setup-screen').classList.remove('hidden');
+  renderCamList();
+}
+
+// ── PLAYER ──
+function loadCam(idx) {
+  if (!cams[idx]) return;
+  currentIdx = idx;
+
+  const video = document.getElementById('player');
+  const loading = document.getElementById('loading');
+  const errorMsg = document.getElementById('error-msg');
+
+  errorMsg.style.display = 'none';
+  loading.classList.remove('hidden');
+  document.getElementById('cam-name-label').textContent = cams[idx].name;
+  updateSidebarActive();
+
+  // tear down old hls
+  if (hls) { hls.destroy(); hls = null; }
+
+  const url = cams[idx].url;
+
+  if (Hls.isSupported()) {
+    hls = new Hls({
+      enableWorker: true,
+      lowLatencyMode: true,
+      maxBufferLength: 8,
+      maxMaxBufferLength: 20,
+      backBufferLength: 10,
+    });
+    hls.loadSource(url);
+    hls.attachMedia(video);
+    hls.on(Hls.Events.MANIFEST_PARSED, () => {
+      loading.classList.add('hidden');
+      video.play().catch(() => {});
+    });
+    hls.on(Hls.Events.ERROR, (e, data) => {
+      if (data.fatal) {
+        loading.classList.add('hidden');
+        errorMsg.style.display = 'flex';
+      }
+    });
+  } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+    // native HLS (Safari-based)
+    video.src = url;
+    video.addEventListener('loadedmetadata', () => {
+      loading.classList.remove('hidden');  // just to be safe
+    }, { once: true });
+    video.addEventListener('canplay', () => {
+      loading.classList.add('hidden');
+      video.play().catch(() => {});
+    }, { once: true });
+    video.addEventListener('error', () => {
+      loading.classList.add('hidden');
+      errorMsg.style.display = 'flex';
+    }, { once: true });
+  } else {
+    loading.classList.add('hidden');
+    errorMsg.style.display = 'flex';
+  }
+}
+
+function prevCam() {
+  if (!cams.length) return;
+  const newIdx = (currentIdx - 1 + cams.length) % cams.length;
+  loadCam(newIdx);
+  showUI();
+}
+
+function nextCam() {
+  if (!cams.length) return;
+  const newIdx = (currentIdx + 1) % cams.length;
+  loadCam(newIdx);
+  showUI();
+}
+
+// ── SIDEBAR ──
+function buildSidebar() {
+  const el = document.getElementById('sidebar-cams');
+  el.innerHTML = cams.map((c, i) => `
+    <button class="cam-btn ${i === currentIdx ? 'active' : ''}" 
+            id="sidebar-cam-${i}"
+            onclick="loadCam(${i}); closeSidebar();">
+      <div class="cam-icon">📷</div>
+      ${escHtml(c.name)}
+    </button>
+  `).join('');
+}
+
+function updateSidebarActive() {
+  cams.forEach((_, i) => {
+    const btn = document.getElementById(`sidebar-cam-${i}`);
+    if (btn) btn.classList.toggle('active', i === currentIdx);
+  });
+}
+
+function toggleSidebar() {
+  sidebarOpen = !sidebarOpen;
+  document.getElementById('sidebar').classList.toggle('open', sidebarOpen);
+  if (sidebarOpen) buildSidebar();
+  showUI();
+}
+
+function closeSidebar() {
+  sidebarOpen = false;
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+// ── UI AUTO-HIDE ──
+function showUI() {
+  document.getElementById('header').classList.remove('hidden');
+  document.getElementById('bottom-bar').classList.remove('hidden');
+  clearTimeout(uiTimeout);
+  uiTimeout = setTimeout(hideUI, 5000);
+}
+
+function hideUI() {
+  if (!sidebarOpen) {
+    document.getElementById('header').classList.add('hidden');
+    document.getElementById('bottom-bar').classList.add('hidden');
+  }
+}
+
+document.addEventListener('mousemove', showUI);
+document.addEventListener('touchstart', showUI);
+
+// ── KEYBOARD / REMOTE ──
+document.addEventListener('keydown', (e) => {
+  showUI();
+  // Fire TV remote: left=37, right=39, up=38, down=40, enter=13, back=8/27, menu=18/82
+  switch(e.keyCode) {
+    case 37: // LEFT → prev cam
+      if (!sidebarOpen) { prevCam(); e.preventDefault(); }
+      break;
+    case 39: // RIGHT → next cam
+      if (!sidebarOpen) { nextCam(); e.preventDefault(); }
+      break;
+    case 38: // UP → show UI / open sidebar
+      if (!sidebarOpen) { toggleSidebar(); e.preventDefault(); }
+      break;
+    case 40: // DOWN → close sidebar
+      if (sidebarOpen) { closeSidebar(); e.preventDefault(); }
+      break;
+    case 13: // SELECT / ENTER
+      if (!sidebarOpen) { toggleSidebar(); e.preventDefault(); }
+      break;
+    case 8:  // BACK
+    case 27: // ESC
+      if (sidebarOpen) { closeSidebar(); e.preventDefault(); }
+      else if (!document.getElementById('setup-screen').classList.contains('hidden')) {
+        // do nothing — stay on setup
+      }
+      break;
+    case 77: // M → edit streams (dev convenience)
+      openSetup();
+      break;
+  }
+});
+
+// ── TOAST ──
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── HELPERS ──
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
 // ── INIT ──
 (function init() {
   const hasCams = loadCams();
