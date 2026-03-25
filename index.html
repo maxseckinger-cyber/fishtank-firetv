@@ -9,6 +9,704 @@
   @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap');
 
   :root {
+    --bg: #050810; --surface: #0c1220; --border: #1a2a3a;
+    --accent: #00e5ff; --accent2: #ff3d6b; --text: #c8dce8; --dim: #4a6070;
+    --focus-glow: 0 0 0 3px #00e5ff, 0 0 20px rgba(0,229,255,0.4);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { width:100%; height:100%; background:var(--bg); color:var(--text); font-family:'Rajdhani',sans-serif; overflow:hidden; user-select:none; }
+  #app { display:flex; flex-direction:column; height:100vh; width:100vw; }
+
+  /* HEADER */
+  #header { display:flex; align-items:center; justify-content:space-between; padding:12px 28px 10px; background:linear-gradient(180deg,rgba(0,0,0,0.8) 0%,transparent 100%); position:absolute; top:0; left:0; right:0; z-index:30; pointer-events:none; transition:opacity 0.4s; }
+  #header.hidden { opacity:0; }
+  .logo { font-family:'Share Tech Mono',monospace; font-size:1.3rem; letter-spacing:0.12em; color:var(--accent); text-shadow:0 0 12px rgba(0,229,255,0.5); }
+  .logo span { color:var(--accent2); }
+  .live-badge { display:flex; align-items:center; gap:7px; font-family:'Share Tech Mono',monospace; font-size:0.75rem; letter-spacing:0.15em; color:var(--accent2); }
+  .live-dot { width:8px; height:8px; border-radius:50%; background:var(--accent2); animation:pulse-dot 1.4s ease-in-out infinite; }
+  @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.7)} }
+
+  /* VIDEO */
+  #video-container { position:relative; flex:1; background:#000; overflow:hidden; }
+  #player { width:100%; height:100%; object-fit:contain; display:block; background:#000; }
+  #video-container::after { content:''; position:absolute; inset:0; pointer-events:none; z-index:2; background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.04) 2px,rgba(0,0,0,0.04) 4px); }
+  .corner { position:absolute; width:24px; height:24px; z-index:3; opacity:0.5; transition:opacity 0.3s; }
+  #video-container:hover .corner { opacity:1; }
+  .corner-tl { top:12px; left:12px; border-top:2px solid var(--accent); border-left:2px solid var(--accent); }
+  .corner-tr { top:12px; right:12px; border-top:2px solid var(--accent); border-right:2px solid var(--accent); }
+  .corner-bl { bottom:12px; left:12px; border-bottom:2px solid var(--accent); border-left:2px solid var(--accent); }
+  .corner-br { bottom:12px; right:12px; border-bottom:2px solid var(--accent); border-right:2px solid var(--accent); }
+
+  #loading { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; background:rgba(5,8,16,0.85); z-index:10; gap:16px; transition:opacity 0.3s; }
+  #loading.hidden { opacity:0; pointer-events:none; }
+  .spinner { width:48px; height:48px; border:3px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin 0.9s linear infinite; }
+  @keyframes spin { to{transform:rotate(360deg)} }
+  .loading-label { font-family:'Share Tech Mono',monospace; font-size:0.75rem; letter-spacing:0.2em; color:var(--accent); }
+
+  #error-msg { position:absolute; inset:0; display:none; flex-direction:column; align-items:center; justify-content:center; background:rgba(5,8,16,0.9); z-index:11; gap:12px; text-align:center; padding:40px; }
+  .err-icon { font-size:2.5rem; }
+  .err-title { font-size:1.2rem; font-weight:700; color:var(--accent2); letter-spacing:0.1em; }
+  .err-body { font-size:0.9rem; color:var(--dim); max-width:480px; line-height:1.7; }
+  .err-hint { margin-top:8px; font-family:'Share Tech Mono',monospace; font-size:0.75rem; color:var(--accent); letter-spacing:0.1em; }
+
+  /* SIDEBAR */
+  #sidebar { position:absolute; right:0; top:0; bottom:0; width:220px; background:linear-gradient(270deg,rgba(12,18,32,0.98) 70%,transparent 100%); display:flex; flex-direction:column; padding:60px 16px 20px; gap:6px; z-index:20; transform:translateX(100%); transition:transform 0.3s cubic-bezier(0.4,0,0.2,1); border-left:1px solid var(--border); overflow-y:auto; }
+  #sidebar.open { transform:translateX(0); }
+  #sidebar::-webkit-scrollbar { width:3px; }
+  #sidebar::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+  .sidebar-title { font-family:'Share Tech Mono',monospace; font-size:0.65rem; letter-spacing:0.2em; color:var(--dim); padding:0 4px 8px; border-bottom:1px solid var(--border); margin-bottom:4px; flex-shrink:0; }
+  .cam-btn { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:6px; border:1px solid transparent; background:transparent; cursor:pointer; color:var(--text); font-family:'Rajdhani',sans-serif; font-size:0.95rem; font-weight:600; letter-spacing:0.04em; transition:all 0.15s; text-align:left; width:100%; outline:none; }
+  .cam-btn:focus,.cam-btn:hover { background:rgba(0,229,255,0.08); border-color:var(--accent); color:#fff; box-shadow:var(--focus-glow); }
+  .cam-btn.active { background:rgba(0,229,255,0.12); border-color:var(--accent); color:var(--accent); }
+  .cam-icon { width:28px; height:28px; border-radius:4px; background:var(--border); display:flex; align-items:center; justify-content:center; font-size:0.75rem; flex-shrink:0; }
+  .cam-btn.active .cam-icon { background:rgba(0,229,255,0.2); }
+
+  /* BOTTOM BAR */
+  #bottom-bar { position:absolute; bottom:0; left:0; right:0; display:flex; align-items:center; gap:10px; padding:14px 20px; background:linear-gradient(0deg,rgba(0,0,0,0.9) 0%,transparent 100%); z-index:20; transition:opacity 0.4s; flex-wrap:wrap; }
+  #bottom-bar.hidden { opacity:0; pointer-events:none; }
+  .ctrl-btn { display:flex; align-items:center; gap:8px; padding:9px 16px; background:rgba(12,18,32,0.85); border:1px solid var(--border); border-radius:6px; color:var(--text); font-family:'Rajdhani',sans-serif; font-weight:600; font-size:0.9rem; letter-spacing:0.06em; cursor:pointer; outline:none; transition:all 0.15s; }
+  .ctrl-btn:focus,.ctrl-btn:hover { background:rgba(0,229,255,0.1); border-color:var(--accent); color:var(--accent); box-shadow:var(--focus-glow); }
+  .ctrl-btn.danger:focus,.ctrl-btn.danger:hover { border-color:var(--accent2); color:var(--accent2); background:rgba(255,61,107,0.1); }
+  #cam-label { margin-left:auto; font-family:'Share Tech Mono',monospace; font-size:0.75rem; letter-spacing:0.15em; color:var(--dim); }
+  #cam-label span { color:var(--accent); }
+
+  /* TOAST */
+  #toast { position:absolute; top:60px; left:50%; transform:translateX(-50%) translateY(-10px); background:rgba(0,229,255,0.12); border:1px solid var(--accent); border-radius:6px; padding:8px 20px; font-family:'Share Tech Mono',monospace; font-size:0.8rem; letter-spacing:0.1em; color:var(--accent); z-index:50; opacity:0; transition:opacity 0.3s,transform 0.3s; pointer-events:none; white-space:nowrap; }
+  #toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+  /* TOKEN OVERLAY */
+  #token-overlay { position:fixed; inset:0; background:rgba(5,8,16,0.97); z-index:200; display:none; flex-direction:column; align-items:center; justify-content:center; padding:32px; gap:14px; overflow-y:auto; }
+  #token-overlay.show { display:flex; }
+  .tok-logo { font-family:'Share Tech Mono',monospace; font-size:1.6rem; color:var(--accent); text-shadow:0 0 20px rgba(0,229,255,0.4); }
+  .tok-logo span { color:var(--accent2); }
+  .tok-sub { font-family:'Share Tech Mono',monospace; font-size:0.72rem; color:var(--dim); letter-spacing:0.15em; }
+  .tok-card { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:22px 28px; max-width:680px; width:100%; display:flex; flex-direction:column; gap:14px; }
+  .tok-heading { font-family:'Share Tech Mono',monospace; font-size:0.65rem; color:var(--accent); letter-spacing:0.2em; }
+  .tok-steps { font-size:0.85rem; color:var(--dim); line-height:1.9; }
+  .tok-steps b { color:var(--accent); font-weight:600; }
+  .tok-field { display:flex; flex-direction:column; gap:5px; }
+  .tok-label { font-family:'Share Tech Mono',monospace; font-size:0.68rem; color:var(--accent); letter-spacing:0.1em; }
+  .tok-input { background:var(--bg); border:1px solid var(--border); border-radius:6px; padding:10px 12px; color:var(--text); font-family:'Share Tech Mono',monospace; font-size:0.72rem; resize:vertical; outline:none; transition:border-color 0.2s; min-height:64px; }
+  .tok-input:focus { border-color:var(--accent); }
+  .tok-input::placeholder { color:var(--dim); }
+  .tok-actions { display:flex; gap:10px; margin-top:2px; }
+  .tok-save { flex:1; padding:12px; background:rgba(0,229,255,0.1); border:1px solid var(--accent); border-radius:6px; color:var(--accent); font-family:'Rajdhani',sans-serif; font-weight:700; font-size:1rem; letter-spacing:0.1em; cursor:pointer; outline:none; transition:all 0.15s; }
+  .tok-save:hover,.tok-save:focus { background:rgba(0,229,255,0.2); box-shadow:var(--focus-glow); }
+  .tok-cancel { padding:12px 18px; background:transparent; border:1px solid var(--border); border-radius:6px; color:var(--dim); font-family:'Rajdhani',sans-serif; font-weight:600; font-size:0.9rem; cursor:pointer; outline:none; transition:all 0.15s; }
+  .tok-cancel:hover,.tok-cancel:focus { border-color:var(--accent2); color:var(--accent2); }
+  .tok-note { font-family:'Share Tech Mono',monospace; font-size:0.68rem; color:var(--dim); text-align:center; line-height:1.8; max-width:600px; }
+  .tok-note b { color:var(--accent); }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <div id="header">
+    <div class="logo">FISH<span>TANK</span>.TV</div>
+    <div class="live-badge"><div class="live-dot"></div>LIVE</div>
+  </div>
+
+  <div id="video-container">
+    <video id="player" autoplay playsinline></video>
+    <div class="corner corner-tl"></div><div class="corner corner-tr"></div>
+    <div class="corner corner-bl"></div><div class="corner corner-br"></div>
+    <div id="loading"><div class="spinner"></div><div class="loading-label">CONNECTING...</div></div>
+    <div id="error-msg">
+      <div class="err-icon">📡</div>
+      <div class="err-title">STREAM UNAVAILABLE</div>
+      <div class="err-body">This camera is offline or the token has expired.<br>Press <b style="color:var(--accent)">REFRESH TOKEN</b> in the bottom bar to update, or try another camera with ◀ ▶.</div>
+      <div class="err-hint">◀ ▶ switch cam &nbsp;·&nbsp; REFRESH TOKEN button below</div>
+    </div>
+  </div>
+
+  <div id="bottom-bar">
+    <button class="ctrl-btn" onclick="prevCam()">◀ PREV</button>
+    <button class="ctrl-btn" onclick="toggleSidebar()">⊞ CAMS</button>
+    <button class="ctrl-btn" onclick="nextCam()">NEXT ▶</button>
+    <button class="ctrl-btn danger" onclick="showTokenOverlay()">🔑 REFRESH TOKEN</button>
+    <div id="cam-label">CAM: <span id="cam-name-label">—</span></div>
+  </div>
+
+  <div id="sidebar">
+    <div class="sidebar-title">// SELECT CAMERA</div>
+    <div id="sidebar-cams"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<!-- TOKEN REFRESH OVERLAY -->
+<div id="token-overlay">
+  <div class="tok-logo">FISH<span>TANK</span>.TV</div>
+  <div class="tok-sub">// REFRESH EXPIRED TOKENS</div>
+  <div class="tok-card">
+    <div class="tok-heading">// HOW TO GET NEW TOKENS (takes ~1 minute)</div>
+    <div class="tok-steps">
+      1. Open <b>fishtank.live</b> in Chrome on your PC → press <b>F12</b> → go to the <b>Network</b> tab → type <b>m3u8</b> in the filter box<br>
+      2. Click play on any <b>Director / Dorm / Closet / Bar</b> camera → click the first <b>index.m3u8</b> request → copy everything after <b>jwt=</b> up to <b>&amp;video</b><br>
+      3. Do the same for any <b>Kitchen / Hallway / Jacuzzi</b> etc. camera for the second token
+    </div>
+    <div class="tok-field">
+      <div class="tok-label">TOKEN G — for: Director · Dorm · Closet · Bar</div>
+      <textarea id="tok-g" class="tok-input" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOi..."></textarea>
+    </div>
+    <div class="tok-field">
+      <div class="tok-label">TOKEN H — for: Kitchen · Hallway · Jacuzzi · Dining · Market · Foyer · Glassroom · Computer Lab · Confessional · Corridor · West Wing · East Wing · Jungle Room · Bar PTZ</div>
+      <textarea id="tok-h" class="tok-input" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOi..."></textarea>
+    </div>
+    <div class="tok-actions">
+      <button class="tok-save" onclick="applyTokens()">✓ SAVE &amp; RELOAD ALL STREAMS</button>
+      <button class="tok-cancel" id="tok-cancel-btn" onclick="hideTokenOverlay()">CANCEL</button>
+    </div>
+  </div>
+  <div class="tok-note">
+    Tokens are saved in this browser only. <b>On Fire TV:</b> paste the new tokens here directly — they'll work immediately without re-uploading anything.<br>
+    Just open the page on Fire TV, press <b>REFRESH TOKEN</b>, paste the two tokens, done.
+  </div>
+</div>
+
+<script>
+// ─── CAMERA DEFINITIONS (paths are permanent) ───────────────────────────────
+const CAM_DEFS = [
+  { name:"Director",     s:"g", p:"live+dirc-5" },
+  { name:"Dorm",         s:"g", p:"live+dmrm-5" },
+  { name:"Closet",       s:"g", p:"live+dmcl-5" },
+  { name:"Bar",          s:"g", p:"live+brrr-5" },
+  { name:"Kitchen",      s:"h", p:"live+ktch-5" },
+  { name:"Hallway",      s:"h", p:"live+hwdn-5" },
+  { name:"Jacuzzi",      s:"h", p:"live+jckz-5" },
+  { name:"Bar PTZ",      s:"h", p:"live+brpz-5" },
+  { name:"Dining Room",  s:"h", p:"live+dnrm-5" },
+  { name:"Market",       s:"h", p:"live+mrke-5" },
+  { name:"Foyer",        s:"h", p:"live+foyr-5" },
+  { name:"Glassroom",    s:"h", p:"live+gsrm-5" },
+  { name:"Computer Lab", s:"h", p:"live+bbcl-5" },
+  { name:"Confessional", s:"h", p:"live+cfsl-5" },
+  { name:"Corridor",     s:"h", p:"live+codr-5" },
+  { name:"West Wing",    s:"h", p:"live+hwup-5" },
+  { name:"East Wing",    s:"h", p:"live+bkny-5" },
+  { name:"Jungle Room",  s:"h", p:"live+br4j-5" },
+];
+
+// ─── BAKED-IN TOKENS ─────────────────────────────────────────────────────────
+// When tokens expire: open the page on Fire TV → press REFRESH TOKEN → paste new ones.
+// They'll be saved in the browser and override these baked-in ones automatically.
+const DEFAULT_G = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTU4MTMsImV4cCI6MTc3NDQxNzYxM30.SOM_AOjMalQcfOHtXCedbHbMfYjlQXlBS4gQr7CuL6A";
+const DEFAULT_H = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E";
+
+const TOK_KEY = "ft_tokens_v1";
+
+function getSavedTokens() {
+  try { const d = localStorage.getItem(TOK_KEY); return d ? JSON.parse(d) : null; } catch(e) { return null; }
+}
+function saveTokensToStorage(g, h) {
+  try { localStorage.setItem(TOK_KEY, JSON.stringify({g, h})); } catch(e) {}
+}
+
+function buildCams(tG, tH) {
+  return CAM_DEFS.map(c => ({
+    name: c.name,
+    url: `https://streams-${c.s}.fishtank.live/hls/${c.p}/index.m3u8?jwt=${c.s==='g'?tG:tH}&video=maxbps`
+  }));
+}
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let cams = [];
+let currentIdx = 0;
+let hls = null;
+let sidebarOpen = false;
+let uiTimeout = null;
+
+// ─── TOKEN OVERLAY ───────────────────────────────────────────────────────────
+function showTokenOverlay() {
+  document.getElementById('token-overlay').classList.add('show');
+  document.getElementById('tok-cancel-btn').style.display = cams.length ? '' : 'none';
+  document.getElementById('tok-g').value = '';
+  document.getElementById('tok-h').value = '';
+}
+function hideTokenOverlay() {
+  document.getElementById('token-overlay').classList.remove('show');
+}
+function applyTokens() {
+  const g = document.getElementById('tok-g').value.trim();
+  const h = document.getElementById('tok-h').value.trim();
+  if (!g || !h) { showToast('Paste both tokens first'); return; }
+  saveTokensToStorage(g, h);
+  cams = buildCams(g, h);
+  buildSidebar();
+  hideTokenOverlay();
+  currentIdx = 0;
+  loadCam(0);
+  showToast('✓ Tokens saved — streams reloading');
+}
+
+// ─── PLAYER ──────────────────────────────────────────────────────────────────
+function loadCam(idx) {
+  if (!cams[idx]) return;
+  currentIdx = idx;
+  const video = document.getElementById('player');
+  const loading = document.getElementById('loading');
+  const errMsg = document.getElementById('error-msg');
+
+  errMsg.style.display = 'none';
+  loading.classList.remove('hidden');
+  document.getElementById('cam-name-label').textContent = cams[idx].name;
+  updateSidebarActive();
+
+  if (hls) { hls.destroy(); hls = null; }
+
+  const url = cams[idx].url;
+  if (Hls.isSupported()) {
+    hls = new Hls({ enableWorker:true, lowLatencyMode:true, maxBufferLength:8, maxMaxBufferLength:20 });
+    hls.loadSource(url);
+    hls.attachMedia(video);
+    hls.on(Hls.Events.MANIFEST_PARSED, () => { loading.classList.add('hidden'); video.play().catch(()=>{}); });
+    hls.on(Hls.Events.ERROR, (e, d) => { if (d.fatal) { loading.classList.add('hidden'); errMsg.style.display='flex'; } });
+  } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+    video.src = url;
+    video.addEventListener('canplay', () => { loading.classList.add('hidden'); video.play().catch(()=>{}); }, {once:true});
+    video.addEventListener('error', () => { loading.classList.add('hidden'); errMsg.style.display='flex'; }, {once:true});
+  } else {
+    loading.classList.add('hidden');
+    errMsg.style.display = 'flex';
+  }
+}
+
+function prevCam() { if (!cams.length) return; loadCam((currentIdx-1+cams.length)%cams.length); showUI(); }
+function nextCam() { if (!cams.length) return; loadCam((currentIdx+1)%cams.length); showUI(); }
+
+// ─── SIDEBAR ─────────────────────────────────────────────────────────────────
+function buildSidebar() {
+  document.getElementById('sidebar-cams').innerHTML = cams.map((c,i) =>
+    `<button class="cam-btn${i===currentIdx?' active':''}" id="sc${i}" onclick="loadCam(${i});closeSidebar();">
+      <div class="cam-icon">📷</div>${esc(c.name)}
+    </button>`
+  ).join('');
+}
+function updateSidebarActive() {
+  cams.forEach((_,i)=>{ const b=document.getElementById(`sc${i}`); if(b) b.classList.toggle('active',i===currentIdx); });
+}
+function toggleSidebar() {
+  sidebarOpen = !sidebarOpen;
+  document.getElementById('sidebar').classList.toggle('open', sidebarOpen);
+  showUI();
+}
+function closeSidebar() {
+  sidebarOpen = false;
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+// ─── UI AUTO-HIDE ─────────────────────────────────────────────────────────────
+function showUI() {
+  document.getElementById('header').classList.remove('hidden');
+  document.getElementById('bottom-bar').classList.remove('hidden');
+  clearTimeout(uiTimeout);
+  uiTimeout = setTimeout(() => {
+    if (!sidebarOpen) {
+      document.getElementById('header').classList.add('hidden');
+      document.getElementById('bottom-bar').classList.add('hidden');
+    }
+  }, 5000);
+}
+document.addEventListener('mousemove', showUI);
+document.addEventListener('touchstart', showUI);
+
+// ─── REMOTE / KEYBOARD ───────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (document.getElementById('token-overlay').classList.contains('show')) return;
+  showUI();
+  switch(e.keyCode) {
+    case 37: if (!sidebarOpen) { prevCam(); e.preventDefault(); } break;
+    case 39: if (!sidebarOpen) { nextCam(); e.preventDefault(); } break;
+    case 38: if (!sidebarOpen) { toggleSidebar(); e.preventDefault(); } break;
+    case 40: if (sidebarOpen)  { closeSidebar(); e.preventDefault(); } break;
+    case 13: if (!sidebarOpen) { toggleSidebar(); e.preventDefault(); } break;
+    case 8: case 27: if (sidebarOpen) { closeSidebar(); e.preventDefault(); } break;
+  }
+});
+
+// ─── TOAST ───────────────────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+// Use saved tokens if available, otherwise fall back to baked-in defaults
+const saved = getSavedTokens();
+const tG = saved ? saved.g : DEFAULT_G;
+const tH = saved ? saved.h : DEFAULT_H;
+cams = buildCams(tG, tH);
+buildSidebar();
+loadCam(0);
+showUI();
+</script>
+</body>
+</html>
+<<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fishtank TV</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.4.12/hls.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap');
+
+  :root {
+    --bg: #050810; --surface: #0c1220; --border: #1a2a3a;
+    --accent: #00e5ff; --accent2: #ff3d6b; --text: #c8dce8; --dim: #4a6070;
+    --focus-glow: 0 0 0 3px #00e5ff, 0 0 20px rgba(0,229,255,0.4);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { width:100%; height:100%; background:var(--bg); color:var(--text); font-family:'Rajdhani',sans-serif; overflow:hidden; user-select:none; }
+  #app { display:flex; flex-direction:column; height:100vh; width:100vw; }
+
+  /* HEADER */
+  #header { display:flex; align-items:center; justify-content:space-between; padding:12px 28px 10px; background:linear-gradient(180deg,rgba(0,0,0,0.8) 0%,transparent 100%); position:absolute; top:0; left:0; right:0; z-index:30; pointer-events:none; transition:opacity 0.4s; }
+  #header.hidden { opacity:0; }
+  .logo { font-family:'Share Tech Mono',monospace; font-size:1.3rem; letter-spacing:0.12em; color:var(--accent); text-shadow:0 0 12px rgba(0,229,255,0.5); }
+  .logo span { color:var(--accent2); }
+  .live-badge { display:flex; align-items:center; gap:7px; font-family:'Share Tech Mono',monospace; font-size:0.75rem; letter-spacing:0.15em; color:var(--accent2); }
+  .live-dot { width:8px; height:8px; border-radius:50%; background:var(--accent2); animation:pulse-dot 1.4s ease-in-out infinite; }
+  @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.7)} }
+
+  /* VIDEO */
+  #video-container { position:relative; flex:1; background:#000; overflow:hidden; }
+  #player { width:100%; height:100%; object-fit:contain; display:block; background:#000; }
+  #video-container::after { content:''; position:absolute; inset:0; pointer-events:none; z-index:2; background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.04) 2px,rgba(0,0,0,0.04) 4px); }
+  .corner { position:absolute; width:24px; height:24px; z-index:3; opacity:0.5; transition:opacity 0.3s; }
+  #video-container:hover .corner { opacity:1; }
+  .corner-tl { top:12px; left:12px; border-top:2px solid var(--accent); border-left:2px solid var(--accent); }
+  .corner-tr { top:12px; right:12px; border-top:2px solid var(--accent); border-right:2px solid var(--accent); }
+  .corner-bl { bottom:12px; left:12px; border-bottom:2px solid var(--accent); border-left:2px solid var(--accent); }
+  .corner-br { bottom:12px; right:12px; border-bottom:2px solid var(--accent); border-right:2px solid var(--accent); }
+
+  #loading { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; background:rgba(5,8,16,0.85); z-index:10; gap:16px; transition:opacity 0.3s; }
+  #loading.hidden { opacity:0; pointer-events:none; }
+  .spinner { width:48px; height:48px; border:3px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin 0.9s linear infinite; }
+  @keyframes spin { to{transform:rotate(360deg)} }
+  .loading-label { font-family:'Share Tech Mono',monospace; font-size:0.75rem; letter-spacing:0.2em; color:var(--accent); }
+
+  #error-msg { position:absolute; inset:0; display:none; flex-direction:column; align-items:center; justify-content:center; background:rgba(5,8,16,0.9); z-index:11; gap:12px; text-align:center; padding:40px; }
+  .err-icon { font-size:2.5rem; }
+  .err-title { font-size:1.2rem; font-weight:700; color:var(--accent2); letter-spacing:0.1em; }
+  .err-body { font-size:0.9rem; color:var(--dim); max-width:480px; line-height:1.7; }
+  .err-hint { margin-top:8px; font-family:'Share Tech Mono',monospace; font-size:0.75rem; color:var(--accent); letter-spacing:0.1em; }
+
+  /* SIDEBAR */
+  #sidebar { position:absolute; right:0; top:0; bottom:0; width:220px; background:linear-gradient(270deg,rgba(12,18,32,0.98) 70%,transparent 100%); display:flex; flex-direction:column; padding:60px 16px 20px; gap:6px; z-index:20; transform:translateX(100%); transition:transform 0.3s cubic-bezier(0.4,0,0.2,1); border-left:1px solid var(--border); overflow-y:auto; }
+  #sidebar.open { transform:translateX(0); }
+  #sidebar::-webkit-scrollbar { width:3px; }
+  #sidebar::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+  .sidebar-title { font-family:'Share Tech Mono',monospace; font-size:0.65rem; letter-spacing:0.2em; color:var(--dim); padding:0 4px 8px; border-bottom:1px solid var(--border); margin-bottom:4px; flex-shrink:0; }
+  .cam-btn { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:6px; border:1px solid transparent; background:transparent; cursor:pointer; color:var(--text); font-family:'Rajdhani',sans-serif; font-size:0.95rem; font-weight:600; letter-spacing:0.04em; transition:all 0.15s; text-align:left; width:100%; outline:none; }
+  .cam-btn:focus,.cam-btn:hover { background:rgba(0,229,255,0.08); border-color:var(--accent); color:#fff; box-shadow:var(--focus-glow); }
+  .cam-btn.active { background:rgba(0,229,255,0.12); border-color:var(--accent); color:var(--accent); }
+  .cam-icon { width:28px; height:28px; border-radius:4px; background:var(--border); display:flex; align-items:center; justify-content:center; font-size:0.75rem; flex-shrink:0; }
+  .cam-btn.active .cam-icon { background:rgba(0,229,255,0.2); }
+
+  /* BOTTOM BAR */
+  #bottom-bar { position:absolute; bottom:0; left:0; right:0; display:flex; align-items:center; gap:10px; padding:14px 20px; background:linear-gradient(0deg,rgba(0,0,0,0.9) 0%,transparent 100%); z-index:20; transition:opacity 0.4s; flex-wrap:wrap; }
+  #bottom-bar.hidden { opacity:0; pointer-events:none; }
+  .ctrl-btn { display:flex; align-items:center; gap:8px; padding:9px 16px; background:rgba(12,18,32,0.85); border:1px solid var(--border); border-radius:6px; color:var(--text); font-family:'Rajdhani',sans-serif; font-weight:600; font-size:0.9rem; letter-spacing:0.06em; cursor:pointer; outline:none; transition:all 0.15s; }
+  .ctrl-btn:focus,.ctrl-btn:hover { background:rgba(0,229,255,0.1); border-color:var(--accent); color:var(--accent); box-shadow:var(--focus-glow); }
+  .ctrl-btn.danger:focus,.ctrl-btn.danger:hover { border-color:var(--accent2); color:var(--accent2); background:rgba(255,61,107,0.1); }
+  #cam-label { margin-left:auto; font-family:'Share Tech Mono',monospace; font-size:0.75rem; letter-spacing:0.15em; color:var(--dim); }
+  #cam-label span { color:var(--accent); }
+
+  /* TOAST */
+  #toast { position:absolute; top:60px; left:50%; transform:translateX(-50%) translateY(-10px); background:rgba(0,229,255,0.12); border:1px solid var(--accent); border-radius:6px; padding:8px 20px; font-family:'Share Tech Mono',monospace; font-size:0.8rem; letter-spacing:0.1em; color:var(--accent); z-index:50; opacity:0; transition:opacity 0.3s,transform 0.3s; pointer-events:none; white-space:nowrap; }
+  #toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+  /* TOKEN OVERLAY */
+  #token-overlay { position:fixed; inset:0; background:rgba(5,8,16,0.97); z-index:200; display:none; flex-direction:column; align-items:center; justify-content:center; padding:32px; gap:14px; overflow-y:auto; }
+  #token-overlay.show { display:flex; }
+  .tok-logo { font-family:'Share Tech Mono',monospace; font-size:1.6rem; color:var(--accent); text-shadow:0 0 20px rgba(0,229,255,0.4); }
+  .tok-logo span { color:var(--accent2); }
+  .tok-sub { font-family:'Share Tech Mono',monospace; font-size:0.72rem; color:var(--dim); letter-spacing:0.15em; }
+  .tok-card { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:22px 28px; max-width:680px; width:100%; display:flex; flex-direction:column; gap:14px; }
+  .tok-heading { font-family:'Share Tech Mono',monospace; font-size:0.65rem; color:var(--accent); letter-spacing:0.2em; }
+  .tok-steps { font-size:0.85rem; color:var(--dim); line-height:1.9; }
+  .tok-steps b { color:var(--accent); font-weight:600; }
+  .tok-field { display:flex; flex-direction:column; gap:5px; }
+  .tok-label { font-family:'Share Tech Mono',monospace; font-size:0.68rem; color:var(--accent); letter-spacing:0.1em; }
+  .tok-input { background:var(--bg); border:1px solid var(--border); border-radius:6px; padding:10px 12px; color:var(--text); font-family:'Share Tech Mono',monospace; font-size:0.72rem; resize:vertical; outline:none; transition:border-color 0.2s; min-height:64px; }
+  .tok-input:focus { border-color:var(--accent); }
+  .tok-input::placeholder { color:var(--dim); }
+  .tok-actions { display:flex; gap:10px; margin-top:2px; }
+  .tok-save { flex:1; padding:12px; background:rgba(0,229,255,0.1); border:1px solid var(--accent); border-radius:6px; color:var(--accent); font-family:'Rajdhani',sans-serif; font-weight:700; font-size:1rem; letter-spacing:0.1em; cursor:pointer; outline:none; transition:all 0.15s; }
+  .tok-save:hover,.tok-save:focus { background:rgba(0,229,255,0.2); box-shadow:var(--focus-glow); }
+  .tok-cancel { padding:12px 18px; background:transparent; border:1px solid var(--border); border-radius:6px; color:var(--dim); font-family:'Rajdhani',sans-serif; font-weight:600; font-size:0.9rem; cursor:pointer; outline:none; transition:all 0.15s; }
+  .tok-cancel:hover,.tok-cancel:focus { border-color:var(--accent2); color:var(--accent2); }
+  .tok-note { font-family:'Share Tech Mono',monospace; font-size:0.68rem; color:var(--dim); text-align:center; line-height:1.8; max-width:600px; }
+  .tok-note b { color:var(--accent); }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <div id="header">
+    <div class="logo">FISH<span>TANK</span>.TV</div>
+    <div class="live-badge"><div class="live-dot"></div>LIVE</div>
+  </div>
+
+  <div id="video-container">
+    <video id="player" autoplay playsinline></video>
+    <div class="corner corner-tl"></div><div class="corner corner-tr"></div>
+    <div class="corner corner-bl"></div><div class="corner corner-br"></div>
+    <div id="loading"><div class="spinner"></div><div class="loading-label">CONNECTING...</div></div>
+    <div id="error-msg">
+      <div class="err-icon">📡</div>
+      <div class="err-title">STREAM UNAVAILABLE</div>
+      <div class="err-body">This camera is offline or the token has expired.<br>Press <b style="color:var(--accent)">REFRESH TOKEN</b> in the bottom bar to update, or try another camera with ◀ ▶.</div>
+      <div class="err-hint">◀ ▶ switch cam &nbsp;·&nbsp; REFRESH TOKEN button below</div>
+    </div>
+  </div>
+
+  <div id="bottom-bar">
+    <button class="ctrl-btn" onclick="prevCam()">◀ PREV</button>
+    <button class="ctrl-btn" onclick="toggleSidebar()">⊞ CAMS</button>
+    <button class="ctrl-btn" onclick="nextCam()">NEXT ▶</button>
+    <button class="ctrl-btn danger" onclick="showTokenOverlay()">🔑 REFRESH TOKEN</button>
+    <div id="cam-label">CAM: <span id="cam-name-label">—</span></div>
+  </div>
+
+  <div id="sidebar">
+    <div class="sidebar-title">// SELECT CAMERA</div>
+    <div id="sidebar-cams"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<!-- TOKEN REFRESH OVERLAY -->
+<div id="token-overlay">
+  <div class="tok-logo">FISH<span>TANK</span>.TV</div>
+  <div class="tok-sub">// REFRESH EXPIRED TOKENS</div>
+  <div class="tok-card">
+    <div class="tok-heading">// HOW TO GET NEW TOKENS (takes ~1 minute)</div>
+    <div class="tok-steps">
+      1. Open <b>fishtank.live</b> in Chrome on your PC → press <b>F12</b> → go to the <b>Network</b> tab → type <b>m3u8</b> in the filter box<br>
+      2. Click play on any <b>Director / Dorm / Closet / Bar</b> camera → click the first <b>index.m3u8</b> request → copy everything after <b>jwt=</b> up to <b>&amp;video</b><br>
+      3. Do the same for any <b>Kitchen / Hallway / Jacuzzi</b> etc. camera for the second token
+    </div>
+    <div class="tok-field">
+      <div class="tok-label">TOKEN G — for: Director · Dorm · Closet · Bar</div>
+      <textarea id="tok-g" class="tok-input" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOi..."></textarea>
+    </div>
+    <div class="tok-field">
+      <div class="tok-label">TOKEN H — for: Kitchen · Hallway · Jacuzzi · Dining · Market · Foyer · Glassroom · Computer Lab · Confessional · Corridor · West Wing · East Wing · Jungle Room · Bar PTZ</div>
+      <textarea id="tok-h" class="tok-input" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOi..."></textarea>
+    </div>
+    <div class="tok-actions">
+      <button class="tok-save" onclick="applyTokens()">✓ SAVE &amp; RELOAD ALL STREAMS</button>
+      <button class="tok-cancel" id="tok-cancel-btn" onclick="hideTokenOverlay()">CANCEL</button>
+    </div>
+  </div>
+  <div class="tok-note">
+    Tokens are saved in this browser only. <b>On Fire TV:</b> paste the new tokens here directly — they'll work immediately without re-uploading anything.<br>
+    Just open the page on Fire TV, press <b>REFRESH TOKEN</b>, paste the two tokens, done.
+  </div>
+</div>
+
+<script>
+// ─── CAMERA DEFINITIONS (paths are permanent) ───────────────────────────────
+const CAM_DEFS = [
+  { name:"Director",     s:"g", p:"live+dirc-5" },
+  { name:"Dorm",         s:"g", p:"live+dmrm-5" },
+  { name:"Closet",       s:"g", p:"live+dmcl-5" },
+  { name:"Bar",          s:"g", p:"live+brrr-5" },
+  { name:"Kitchen",      s:"h", p:"live+ktch-5" },
+  { name:"Hallway",      s:"h", p:"live+hwdn-5" },
+  { name:"Jacuzzi",      s:"h", p:"live+jckz-5" },
+  { name:"Bar PTZ",      s:"h", p:"live+brpz-5" },
+  { name:"Dining Room",  s:"h", p:"live+dnrm-5" },
+  { name:"Market",       s:"h", p:"live+mrke-5" },
+  { name:"Foyer",        s:"h", p:"live+foyr-5" },
+  { name:"Glassroom",    s:"h", p:"live+gsrm-5" },
+  { name:"Computer Lab", s:"h", p:"live+bbcl-5" },
+  { name:"Confessional", s:"h", p:"live+cfsl-5" },
+  { name:"Corridor",     s:"h", p:"live+codr-5" },
+  { name:"West Wing",    s:"h", p:"live+hwup-5" },
+  { name:"East Wing",    s:"h", p:"live+bkny-5" },
+  { name:"Jungle Room",  s:"h", p:"live+br4j-5" },
+];
+
+// ─── BAKED-IN TOKENS ─────────────────────────────────────────────────────────
+// When tokens expire: open the page on Fire TV → press REFRESH TOKEN → paste new ones.
+// They'll be saved in the browser and override these baked-in ones automatically.
+const DEFAULT_G = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTU4MTMsImV4cCI6MTc3NDQxNzYxM30.SOM_AOjMalQcfOHtXCedbHbMfYjlQXlBS4gQr7CuL6A";
+const DEFAULT_H = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIjc3AiLCJ1aWQiOiI0NzMxNTRhNi0wYjZkLTQwOTctODc5ZC1kOTJmODhmY2Q2NTAiLCJpYXQiOjE3NzQ0MTYwMzMsImV4cCI6MTc3NDQxNzgzM30.qNhcakaTy0t9FQ9xLah2UaSUCkaUluse8TuK_u8qT3E";
+
+const TOK_KEY = "ft_tokens_v1";
+
+function getSavedTokens() {
+  try { const d = localStorage.getItem(TOK_KEY); return d ? JSON.parse(d) : null; } catch(e) { return null; }
+}
+function saveTokensToStorage(g, h) {
+  try { localStorage.setItem(TOK_KEY, JSON.stringify({g, h})); } catch(e) {}
+}
+
+function buildCams(tG, tH) {
+  return CAM_DEFS.map(c => ({
+    name: c.name,
+    url: `https://streams-${c.s}.fishtank.live/hls/${c.p}/index.m3u8?jwt=${c.s==='g'?tG:tH}&video=maxbps`
+  }));
+}
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let cams = [];
+let currentIdx = 0;
+let hls = null;
+let sidebarOpen = false;
+let uiTimeout = null;
+
+// ─── TOKEN OVERLAY ───────────────────────────────────────────────────────────
+function showTokenOverlay() {
+  document.getElementById('token-overlay').classList.add('show');
+  document.getElementById('tok-cancel-btn').style.display = cams.length ? '' : 'none';
+  document.getElementById('tok-g').value = '';
+  document.getElementById('tok-h').value = '';
+}
+function hideTokenOverlay() {
+  document.getElementById('token-overlay').classList.remove('show');
+}
+function applyTokens() {
+  const g = document.getElementById('tok-g').value.trim();
+  const h = document.getElementById('tok-h').value.trim();
+  if (!g || !h) { showToast('Paste both tokens first'); return; }
+  saveTokensToStorage(g, h);
+  cams = buildCams(g, h);
+  buildSidebar();
+  hideTokenOverlay();
+  currentIdx = 0;
+  loadCam(0);
+  showToast('✓ Tokens saved — streams reloading');
+}
+
+// ─── PLAYER ──────────────────────────────────────────────────────────────────
+function loadCam(idx) {
+  if (!cams[idx]) return;
+  currentIdx = idx;
+  const video = document.getElementById('player');
+  const loading = document.getElementById('loading');
+  const errMsg = document.getElementById('error-msg');
+
+  errMsg.style.display = 'none';
+  loading.classList.remove('hidden');
+  document.getElementById('cam-name-label').textContent = cams[idx].name;
+  updateSidebarActive();
+
+  if (hls) { hls.destroy(); hls = null; }
+
+  const url = cams[idx].url;
+  if (Hls.isSupported()) {
+    hls = new Hls({ enableWorker:true, lowLatencyMode:true, maxBufferLength:8, maxMaxBufferLength:20 });
+    hls.loadSource(url);
+    hls.attachMedia(video);
+    hls.on(Hls.Events.MANIFEST_PARSED, () => { loading.classList.add('hidden'); video.play().catch(()=>{}); });
+    hls.on(Hls.Events.ERROR, (e, d) => { if (d.fatal) { loading.classList.add('hidden'); errMsg.style.display='flex'; } });
+  } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+    video.src = url;
+    video.addEventListener('canplay', () => { loading.classList.add('hidden'); video.play().catch(()=>{}); }, {once:true});
+    video.addEventListener('error', () => { loading.classList.add('hidden'); errMsg.style.display='flex'; }, {once:true});
+  } else {
+    loading.classList.add('hidden');
+    errMsg.style.display = 'flex';
+  }
+}
+
+function prevCam() { if (!cams.length) return; loadCam((currentIdx-1+cams.length)%cams.length); showUI(); }
+function nextCam() { if (!cams.length) return; loadCam((currentIdx+1)%cams.length); showUI(); }
+
+// ─── SIDEBAR ─────────────────────────────────────────────────────────────────
+function buildSidebar() {
+  document.getElementById('sidebar-cams').innerHTML = cams.map((c,i) =>
+    `<button class="cam-btn${i===currentIdx?' active':''}" id="sc${i}" onclick="loadCam(${i});closeSidebar();">
+      <div class="cam-icon">📷</div>${esc(c.name)}
+    </button>`
+  ).join('');
+}
+function updateSidebarActive() {
+  cams.forEach((_,i)=>{ const b=document.getElementById(`sc${i}`); if(b) b.classList.toggle('active',i===currentIdx); });
+}
+function toggleSidebar() {
+  sidebarOpen = !sidebarOpen;
+  document.getElementById('sidebar').classList.toggle('open', sidebarOpen);
+  showUI();
+}
+function closeSidebar() {
+  sidebarOpen = false;
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+// ─── UI AUTO-HIDE ─────────────────────────────────────────────────────────────
+function showUI() {
+  document.getElementById('header').classList.remove('hidden');
+  document.getElementById('bottom-bar').classList.remove('hidden');
+  clearTimeout(uiTimeout);
+  uiTimeout = setTimeout(() => {
+    if (!sidebarOpen) {
+      document.getElementById('header').classList.add('hidden');
+      document.getElementById('bottom-bar').classList.add('hidden');
+    }
+  }, 5000);
+}
+document.addEventListener('mousemove', showUI);
+document.addEventListener('touchstart', showUI);
+
+// ─── REMOTE / KEYBOARD ───────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (document.getElementById('token-overlay').classList.contains('show')) return;
+  showUI();
+  switch(e.keyCode) {
+    case 37: if (!sidebarOpen) { prevCam(); e.preventDefault(); } break;
+    case 39: if (!sidebarOpen) { nextCam(); e.preventDefault(); } break;
+    case 38: if (!sidebarOpen) { toggleSidebar(); e.preventDefault(); } break;
+    case 40: if (sidebarOpen)  { closeSidebar(); e.preventDefault(); } break;
+    case 13: if (!sidebarOpen) { toggleSidebar(); e.preventDefault(); } break;
+    case 8: case 27: if (sidebarOpen) { closeSidebar(); e.preventDefault(); } break;
+  }
+});
+
+// ─── TOAST ───────────────────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+// Use saved tokens if available, otherwise fall back to baked-in defaults
+const saved = getSavedTokens();
+const tG = saved ? saved.g : DEFAULT_G;
+const tH = saved ? saved.h : DEFAULT_H;
+cams = buildCams(tG, tH);
+buildSidebar();
+loadCam(0);
+showUI();
+</script>
+</body>
+</html>
+!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fishtank TV</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.4.12/hls.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap');
+
+  :root {
     --bg: #050810;
     --surface: #0c1220;
     --border: #1a2a3a;
